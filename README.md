@@ -244,6 +244,7 @@ Setiap anggota berinteraksi dengan AI melalui dua fase terpisah:
 
 Untuk rincian spesifikasi teknis dan tata kelola proyek yang lebih mendalam, silakan merujuk pada berkas dokumentasi internal:
 
+* 📊 [PROGRESS_TRACKER.md](docs/planning/PROGRESS_TRACKER.md) — **Master status pelacakan 23 langkah kerja seluruh anggota tim**.
 * 📄 [PRD.md](docs/PRD.md) — *Product Requirement Document* & batasan teknis.
 * 📄 [SRS.md](docs/SRS.md) — *Software Requirements Specification* (fungsional & non-fungsional).
 * 📐 [ARCHITECTURE.md](docs/ARCHITECTURE.md) — Detail arsitektur, diagram komponen, dan kontrak antarmuka modul.
