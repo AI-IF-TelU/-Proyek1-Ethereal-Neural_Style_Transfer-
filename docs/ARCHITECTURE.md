@@ -27,16 +27,31 @@ graph TD
 ## 2. Kontrak Modul & Spesifikasi Fungsi
 
 ### A. Modul Preprocessing (`src/preprocessing.py`) — PIC: A2
+
+> **Kebijakan Tunggal Parameter `size` (Keputusan D-005):**
+> 1. Seluruh fungsi pada `src/preprocessing.py` menggunakan nama parameter **`size`** (bukan `target_size`).
+> 2. Tuple `size` **selalu didefinisikan sebagai `(height, width)` = `(H, W)`** mengikuti konvensi PyTorch `[N, C, H, W]`.
+> 3. Saat memanggil `PIL.Image.resize` secara internal, tuple `(height, width)` wajib dibalik menjadi `(width, height)`: `image.resize((width, height), Image.Resampling.LANCZOS)`.
+> 4. Metode resize menggunakan *direct exact resize* ke `(H, W)` dengan filter `Image.Resampling.LANCZOS` (tanpa *cropping*).
+> 5. Validasi `size`: Harus `None` atau `tuple[int, int]` berisi tepat 2 integer murni (`not isinstance(v, bool)`) dengan `H > 0` dan `W > 0`. Selain itu wajib melempar `ValueError`.
+
 * **`load_image(image_path: str | Path, size: tuple[int, int] | None = None) -> Image.Image`**
-  * *Deskripsi:* Membaca file JPEG/PNG, memvalidasi format, mengonversi ke RGB mandiri. Jika `size` diberikan, melakukan resize kualitas tinggi (`LANCZOS`).
-  * *Exceptions:* `FileNotFoundError`, `ValueError` (format salah/rusak).
-* **`preprocess_image(image: Image.Image | str | Path, target_size: tuple[int, int] = (512, 512), device: torch.device | str = "cpu") -> torch.Tensor`**
-  * *Deskripsi:* Mengubah gambar menjadi Tensor PyTorch 4D `(1, 3, H, W)` bertipe `torch.float32`.
-  * *Normalisasi:* ImageNet standar ($\mu = [0.485, 0.456, 0.406]$, $\sigma = [0.229, 0.224, 0.225]$).
-  * *Output Shape:* `(1, 3, target_size[0], target_size[1])` pada `device` yang ditentukan.
+  * *Deskripsi:* Membaca file JPEG/PNG, memvalidasi format isi file, dan mengonversi ke mode `"RGB"` mandiri (file sumber ditutup).
+  * *Perilaku Resize:*
+    * Jika `size=None`: mengembalikan `PIL.Image` RGB dengan ukuran asli.
+    * Jika `size=(H, W)`: memvalidasi `size` dan melakukan resize `LANCZOS` sehingga `result.height == H` dan `result.width == W` (yaitu `result.size == (W, H)`).
+  * *Exceptions:* `FileNotFoundError`, `ValueError` (format bukan JPEG/PNG, file rusak, atau `size` tidak valid), `OSError`.
+* **`preprocess_image(image: Image.Image | str | Path, size: tuple[int, int] | None = (512, 512), device: torch.device | str = "cpu") -> torch.Tensor`**
+  * *Deskripsi:* Mengubah gambar menjadi Tensor PyTorch 4D `(1, 3, H, W)` bertipe `torch.float32` yang siap dimasukkan ke VGG-19.
+  * *Perilaku Alur & Resize (Tanpa Double Resize):*
+    * Jika `image` berupa `str | Path`: memanggil `load_image(image, size=size)`.
+    * Jika `image` berupa `PIL.Image.Image`: memastikan mode `"RGB"`. Jika `size is not None`, memvalidasi `size` dan hanya melakukan resize `LANCZOS` ke `(H, W)` apabila `(image.height, image.width) != size`. Jika `size is None`, mempertahankan ukuran gambar saat itu.
+  * *Normalisasi:* Skala awal piksel `[0.0, 1.0]` dinormalisasi dengan standar ImageNet ($\mu = [0.485, 0.456, 0.406]$, $\sigma = [0.229, 0.224, 0.225]$).
+  * *Output Shape:* `(1, 3, H, W)` bertipe `torch.float32` pada `device` yang ditentukan.
+  * *Exceptions:* `TypeError` / `ValueError` jika tipe `image` atau nilai `size` tidak valid.
 * **`deprocess_image(tensor: torch.Tensor) -> Image.Image`**
-  * *Deskripsi:* Mengembalikan tensor hasil olahan menjadi `PIL.Image.Image` (RGB).
-  * *Operasi:* Hapus dimensi batch `(3, H, W)`, denormalisasi ($x \times \sigma + \mu$), *clamping* ke rentang $[0.0, 1.0]$, konversi ke uint8 `[0, 255]`.
+  * *Deskripsi:* Mengembalikan tensor hasil olahan menjadi `PIL.Image.Image` mode `"RGB"`.
+  * *Operasi:* Menerima tensor 4D `(1, 3, H, W)` atau 3D `(3, H, W)` (selain itu lempar `ValueError`), menyalin secara aman (`detach().cpu().clone()`), menghapus dimensi batch menjadi `(3, H, W)`, denormalisasi ($x \times \sigma + \mu$), *clamping* ke rentang $[0.0, 1.0]$, konversi ke `uint8` `[0, 255]`, dan mengembalikan `PIL.Image` RGB dengan `height == H` dan `width == W`.
 
 ### B. Modul Feature Extractor (`src/feature_extractor.py`) — PIC: A1
 * **`get_vgg19_model(device: torch.device | str = "cpu") -> torch.nn.Module`**
@@ -66,7 +81,7 @@ graph TD
 
 ## 3. Ketentuan Dimensi & Tipe Tensor Global
 
-1. **Format Tensor:** Seluruh tensor gambar dalam pipeline wajib berbentuk 4D: `(N, C, H, W)` di mana $N=1$ (batch size), $C=3$ (RGB).
+1. **Format Tensor & Ukuran:** Seluruh tensor gambar dalam pipeline wajib berbentuk 4D: `(N, C, H, W)` di mana $N=1$ (batch size), $C=3$ (RGB), $H$ = tinggi (*height*), $W$ = lebar (*width*). Seluruh parameter `size` menggunakan urutan `(H, W)`.
 2. **Tipe Data:** `torch.float32`.
 3. **Reproducibility:** Seluruh random initialization wajib dikunci dengan random seed di `config/config.yaml`.
 4. **Pemisahan Modul:** Setiap modul hanya berinteraksi melalui fungsi antarmuka resmi di atas tanpa mengakses variabel internal modul lain.
