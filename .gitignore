@@ -1,0 +1,44 @@
+# Python
+__pycache__/
+*.py[cod]
+*.class
+*.so
+.Python
+.venv/
+venv/
+env/
+ENV/
+
+# Outputs
+outputs/images/*
+outputs/graphs/*
+!outputs/images/.gitkeep
+!outputs/graphs/.gitkeep
+
+# Assets
+assets/content/*
+assets/style/*
+!assets/content/.gitkeep
+!assets/style/.gitkeep
+
+# Logs
+*.log
+!logs/
+!logs/**
+
+# Jupyter
+.ipynb_checkpoints
+
+# Testing
+.pytest_cache/
+.coverage
+htmlcov/
+
+# IDE
+.vscode/*
+!.vscode/settings.json
+
+# Secrets
+*.env
+.env
+secrets/
