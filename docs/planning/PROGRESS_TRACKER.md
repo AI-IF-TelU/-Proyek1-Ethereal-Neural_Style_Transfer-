@@ -21,7 +21,7 @@ Dokumen ini adalah **pusat kendali dan status resmi (*Single Source of Truth*)**
 | :---: | :--- | :---: | :---: | :--- |
 | **Stage 0** | Planning & Design | A1 (Lead) & Tim | `COMPLETED` | Seluruh dokumen master di `docs/` disetujui. |
 | **Stage 1** | Project Scaffolding | A1 | `COMPLETED` | Struktur folder, virtualenv, dan testing awal siap. |
-| **Stage 2** | Data Pipeline | A2 | `READY` | Preprocessing selesai dan lolos `test_preprocessing.py`. |
+| **Stage 2** | Data Pipeline | A2 | `IN_PROGRESS` | Preprocessing selesai dan lolos `test_preprocessing.py`. |
 | **Stage 3** | VGG-19 Feature Extractor | A1 | `PENDING` | Layer VGG-19 beku tervalidasi bentuk tensornya. |
 | **Stage 4** | Loss & Optimization | A3 | `PENDING` | Gram Matrix, Content/Style Loss teruji numerik. |
 | **Stage 5** | QA & Dokumentasi | A4 | `PENDING` | Integration test lulus tanpa regresi, log terverifikasi. |
@@ -45,8 +45,8 @@ Dokumen ini adalah **pusat kendali dan status resmi (*Single Source of Truth*)**
 | **S00-03** | A4 | Kebijakan Logging AI & Format Log | S00-02 | `COMPLETED` | Skrip logging tested | [logs/A4/](file:///d:/diskb/KULIAH/EKSTENSI/smt3/genai/tubesgenai/neural-style-transfer/logs/A4/) |
 | **S01-01** | A1 | Struktur Folder & Git Scaffolding | Stage 0 | `COMPLETED` | Folder & Git tree | [logs/A1/](file:///d:/diskb/KULIAH/EKSTENSI/smt3/genai/tubesgenai/neural-style-transfer/logs/A1/) |
 | **S01-02** | A1 | Coding Standards & Pytest Config | S01-01 | `COMPLETED` | `pytest -q` (pass) | [logs/A1/](file:///d:/diskb/KULIAH/EKSTENSI/smt3/genai/tubesgenai/neural-style-transfer/logs/A1/) |
-| **S02-01** | A2 | Perencanaan Format Data & Pasangan Gambar | Stage 1 | `READY` | Format validasi | [logs/A2/](file:///d:/diskb/KULIAH/EKSTENSI/smt3/genai/tubesgenai/neural-style-transfer/logs/A2/) |
-| **S02-02** | A2 | Implementasi Image Loader (Pillow/RGB) | S02-01 | `PENDING` | `test_preprocessing.py` | [logs/A2/](file:///d:/diskb/KULIAH/EKSTENSI/smt3/genai/tubesgenai/neural-style-transfer/logs/A2/) |
+| **S02-01** | A2 | Perencanaan Format Data & Pasangan Gambar | Stage 1 | `COMPLETED` | Kedua aset valid; A2 meminta lanjut S02-02 | [Catatan transisi](../../logs/A2/S02-02-LOG.md) |
+| **S02-02** | A2 | Implementasi Image Loader (Pillow/RGB) | S02-01 | `IN_PROGRESS` | 8 tes unittest lulus; menunggu review hasil | [S02-02](../../logs/A2/S02-02-LOG.md) |
 | **S02-03** | A2 | Image Resize, Tensor & Normalisasi VGG | S02-02 | `PENDING` | Shape & range test | [logs/A2/](file:///d:/diskb/KULIAH/EKSTENSI/smt3/genai/tubesgenai/neural-style-transfer/logs/A2/) |
 | **S02-04** | A2 | Unit Testing & Handoff Preprocessing | S02-03 | `PENDING` | `pytest tests/test_preprocessing.py` | [logs/A2/](file:///d:/diskb/KULIAH/EKSTENSI/smt3/genai/tubesgenai/neural-style-transfer/logs/A2/) |
 | **S03-01** | A1 | Load VGG-19 Pretrained & Freezing Bobot | Stage 2 | `PENDING` | Grad flow check | [logs/A1/](file:///d:/diskb/KULIAH/EKSTENSI/smt3/genai/tubesgenai/neural-style-transfer/logs/A1/) |
