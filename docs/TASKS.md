@@ -1,10 +1,10 @@
 # TASKS & Pembagian Anggota
 
 ## Anggota
-- A1 - Ketua, Prompt Engineer & Arsitektur
-- A2 - Data Pipeline Engineer
-- A3 - Loss & Optimization Engineer
-- A4 - QA, Documentation & Error Handler
+- **A1**: Samuel Aaron (NIM: 103012580024) — Ketua, Prompt Engineer & Arsitektur
+- **A2**: Marthin M. Tambunan (NIM: 103012580055) — Data Pipeline & Preprocessing Engineer
+- **A3**: Hafiz Fajar Ramadhan (NIM: 103012430027) — Loss & Optimization Engineer
+- **A4**: Muhammad Rafiq Abdurrasyid (NIM: 103012400240) — QA, Documentation & Error Handler
 
 ## Tahapan
 | Stage | Nama | Penanggung Jawab | Dependensi | Status |
