@@ -40,14 +40,14 @@ Dokumen ini adalah **pusat kendali dan status resmi (*Single Source of Truth*)**
 
 | Step ID | PIC | Nama Langkah Aktivitas | Dependensi | Status | Unit / Smoke Test | Tautan Log Interaksi |
 | :--- | :---: | :--- | :---: | :---: | :---: | :--- |
-| **S00-01** | A1 | Analisis Kebutuhan (PRD & SRS) | - | `COMPLETED` | Validasi dokumen | [logs/A1/](file:///d:/diskb/KULIAH/EKSTENSI/smt3/genai/tubesgenai/neural-style-transfer/logs/A1/) |
-| **S00-02** | A1 | Perancangan Arsitektur & Kontrak Modul | S00-01 | `COMPLETED` | Mermaid review | [logs/A1/](file:///d:/diskb/KULIAH/EKSTENSI/smt3/genai/tubesgenai/neural-style-transfer/logs/A1/) |
+| **S00-01** | A1 | Analisis Kebutuhan (PRD & SRS) | - | `COMPLETED` | Validasi dokumen | [S00-02](../../logs/A1/S00-02-LOG.md) |
+| **S00-02** | A1 | Perancangan Arsitektur & Kontrak Modul | S00-01 | `COMPLETED` | Mermaid review | [S00-02](../../logs/A1/S00-02-LOG.md) |
 | **S00-03** | A4 | Kebijakan Logging AI & Format Log | S00-02 | `COMPLETED` | Skrip logging tested | [logs/A4/](file:///d:/diskb/KULIAH/EKSTENSI/smt3/genai/tubesgenai/neural-style-transfer/logs/A4/) |
-| **S01-01** | A1 | Struktur Folder & Git Scaffolding | Stage 0 | `COMPLETED` | Folder & Git tree | [logs/A1/](file:///d:/diskb/KULIAH/EKSTENSI/smt3/genai/tubesgenai/neural-style-transfer/logs/A1/) |
-| **S01-02** | A1 | Coding Standards & Pytest Config | S01-01 | `COMPLETED` | `pytest -q` (pass) | [logs/A1/](file:///d:/diskb/KULIAH/EKSTENSI/smt3/genai/tubesgenai/neural-style-transfer/logs/A1/) |
+| **S01-01** | A1 | Struktur Folder & Git Scaffolding | Stage 0 | `COMPLETED` | Folder & Git tree | [S01-01](../../logs/A1/S01-01-LOG.md) |
+| **S01-02** | A1 | Coding Standards & Pytest Config | S01-01 | `COMPLETED` | `pytest -q` (pass) | [S01-01](../../logs/A1/S01-01-LOG.md) |
 | **S02-01** | A2 | Perencanaan Format Data & Pasangan Gambar | Stage 1 | `COMPLETED` | Kedua aset valid; A2 meminta lanjut S02-02 | [Catatan transisi](../../logs/A2/S02-02-LOG.md) |
-| **S02-02** | A2 | Implementasi Image Loader (Pillow/RGB) | S02-01 | `IN_PROGRESS` | 8 tes unittest lulus; menunggu review hasil | [S02-02](../../logs/A2/S02-02-LOG.md) |
-| **S02-03** | A2 | Image Resize, Tensor & Normalisasi VGG | S02-02 | `PENDING` | Shape & range test | [logs/A2/](file:///d:/diskb/KULIAH/EKSTENSI/smt3/genai/tubesgenai/neural-style-transfer/logs/A2/) |
+| **S02-02** | A2 | Implementasi Image Loader (Pillow/RGB) | S02-01 | `COMPLETED` | 8 tes unittest lulus; disetujui A1 | [S02-02](../../logs/A2/S02-02-LOG.md) |
+| **S02-03** | A2 | Image Resize, Tensor & Normalisasi VGG | S02-02 | `READY` | Shape & range test | [logs/A2/](file:///d:/diskb/KULIAH/EKSTENSI/smt3/genai/tubesgenai/neural-style-transfer/docs/planning/PROGRESS_TRACKER.md) |
 | **S02-04** | A2 | Unit Testing & Handoff Preprocessing | S02-03 | `PENDING` | `pytest tests/test_preprocessing.py` | [logs/A2/](file:///d:/diskb/KULIAH/EKSTENSI/smt3/genai/tubesgenai/neural-style-transfer/logs/A2/) |
 | **S03-01** | A1 | Load VGG-19 Pretrained & Freezing Bobot | Stage 2 | `PENDING` | Grad flow check | [logs/A1/](file:///d:/diskb/KULIAH/EKSTENSI/smt3/genai/tubesgenai/neural-style-transfer/logs/A1/) |
 | **S03-02** | A1 | Ekstraksi Layer Content & Style | S03-01 | `PENDING` | `test_feature_extractor.py` | [logs/A1/](file:///d:/diskb/KULIAH/EKSTENSI/smt3/genai/tubesgenai/neural-style-transfer/logs/A1/) |
