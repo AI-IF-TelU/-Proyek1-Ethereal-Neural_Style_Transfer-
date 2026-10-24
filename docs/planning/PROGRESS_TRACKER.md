@@ -47,7 +47,7 @@ Dokumen ini adalah **pusat kendali dan status resmi (*Single Source of Truth*)**
 | **S01-02** | A1 | Coding Standards & Pytest Config | S01-01 | `COMPLETED` | `pytest -q` (pass) | [S01-01](../../logs/A1/S01-01-LOG.md) |
 | **S02-01** | A2 | Perencanaan Format Data & Pasangan Gambar | Stage 1 | `COMPLETED` | Kedua aset valid; A2 meminta lanjut S02-02 | [Catatan transisi](../../logs/A2/S02-02-LOG.md) |
 | **S02-02** | A2 | Implementasi Image Loader (Pillow/RGB) | S02-01 | `COMPLETED` | 8 tes unittest lulus; disetujui A1 | [S02-02](../../logs/A2/S02-02-LOG.md) |
-| **S02-03** | A2 | Image Resize, Tensor & Normalisasi VGG | S02-02 | `READY` | Shape & range test | [logs/A2/](file:///d:/diskb/KULIAH/EKSTENSI/smt3/genai/tubesgenai/neural-style-transfer/docs/planning/PROGRESS_TRACKER.md) |
+| **S02-03** | A2 | Image Resize, Tensor & Normalisasi VGG | S02-02 | `READY` | Shape & range test | [S02-03 (Ready)](../../logs/A2/S02-03-LOG.md) |
 | **S02-04** | A2 | Unit Testing & Handoff Preprocessing | S02-03 | `PENDING` | `pytest tests/test_preprocessing.py` | [logs/A2/](file:///d:/diskb/KULIAH/EKSTENSI/smt3/genai/tubesgenai/neural-style-transfer/logs/A2/) |
 | **S03-01** | A1 | Load VGG-19 Pretrained & Freezing Bobot | Stage 2 | `PENDING` | Grad flow check | [logs/A1/](file:///d:/diskb/KULIAH/EKSTENSI/smt3/genai/tubesgenai/neural-style-transfer/logs/A1/) |
 | **S03-02** | A1 | Ekstraksi Layer Content & Style | S03-01 | `PENDING` | `test_feature_extractor.py` | [logs/A1/](file:///d:/diskb/KULIAH/EKSTENSI/smt3/genai/tubesgenai/neural-style-transfer/logs/A1/) |
