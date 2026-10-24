@@ -79,11 +79,12 @@ flowchart TD
         CF --> CL["Content Loss (MSE antar Fitur)"]
         SF --> GM["Gram Matrix (Korelasi Channel)"]
         GM --> SL["Style Loss (MSE Gram Matrix)"]
-        CL & SL --> TL["Total Loss = α · L_content + β · L_style"]
+        CL --> TL["Total Loss = α · L_content + β · L_style"]
+        SL --> TL
     end
 
     subgraph OPTIMIZATION ["5. Loop Optimasi Piksel"]
-        TL -->|Backward Pass (Autograd)| OPT["Optimizer (L-BFGS / Adam)"]
+        TL -->|"Backward Pass (Autograd)"| OPT["Optimizer (L-BFGS / Adam)"]
         OPT -->|Update Nilai Piksel| GI
         OPT -.->|Iterasi Konvergen| OUT["Hasil Akhir: Gambar Tertransfer"]
     end

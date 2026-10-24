@@ -1,7 +1,7 @@
 # ARCHITECTURE - Neural Style Transfer
 
 ## Alur Umum (Mermaid)
-`mermaid
+```mermaid
 graph TD
     A[Input Content & Style] --> B[Preprocessing]
     B --> C[VGG-19 Feature Extractor - Frozen]
@@ -14,7 +14,7 @@ graph TD
     H --> I
     I --> J[Optimize Generated Image Pixels]
     J --> K[Visualization & Output]
-`
+```
 
 ## Modul & Kontrak (Stage 0/1 - kontrak saja)
 - preprocessing.py: load_image, preprocess, postprocess (placeholder)
