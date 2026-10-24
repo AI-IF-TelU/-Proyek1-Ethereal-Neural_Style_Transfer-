@@ -33,9 +33,10 @@
      * `preprocess_image(image, size=(512, 512), device="cpu") -> torch.Tensor`: jika `image` berupa path, panggil `load_image(image, size=size)`. Jika berupa `PIL.Image`, pastikan RGB dan hanya resize jika `size is not None` dan `(image.height, image.width) != size`. Konversi ke tensor 4D `(1, 3, H, W)` `torch.float32` dan terapkan normalisasi standar ImageNet ($\mu = [0.485, 0.456, 0.406]$, $\sigma = [0.229, 0.224, 0.225]$).
   5. **Deprocessing:** Buat fungsi `deprocess_image(tensor: torch.Tensor) -> Image.Image` untuk menghapus dimensi batch, denormalisasi, clamping ke rentang $[0.0, 1.0]$, dan konversi kembali ke `PIL.Image` RGB.
 * **Target Berkas:** `src/preprocessing.py`, `tests/test_preprocessing.py`
-* **Status:** `READY`
+* **Status:** `IN_PROGRESS`
 
 ### S02-04: Preprocessing Testing & Handoff
+* **Status:** `PENDING`
 * **Tujuan:** Memastikan seluruh unit test pada `tests/test_preprocessing.py` (termasuk pengujian ukuran non-persegi `size=(H, W)` agar tinggi dan lebar terbukti tidak tertukar) lulus 100%.
 * **Target Berkas:** `tests/test_preprocessing.py`
 

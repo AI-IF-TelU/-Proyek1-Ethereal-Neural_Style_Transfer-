@@ -52,6 +52,7 @@ graph TD
 * **`deprocess_image(tensor: torch.Tensor) -> Image.Image`**
   * *Deskripsi:* Mengembalikan tensor hasil olahan menjadi `PIL.Image.Image` mode `"RGB"`.
   * *Operasi:* Menerima tensor 4D `(1, 3, H, W)` atau 3D `(3, H, W)` (selain itu lempar `ValueError`), menyalin secara aman (`detach().cpu().clone()`), menghapus dimensi batch menjadi `(3, H, W)`, denormalisasi ($x \times \sigma + \mu$), *clamping* ke rentang $[0.0, 1.0]$, konversi ke `uint8` `[0, 255]`, dan mengembalikan `PIL.Image` RGB dengan `height == H` dan `width == W`.
+  * *Klarifikasi Validasi S02-03:* Input bukan tensor ditolak dengan `TypeError`; dtype non-floating, nilai NaN/Inf, dan dimensi spasial kosong ditolak dengan `ValueError`. Konversi ke `uint8` membulatkan nilai piksel terdekat setelah clamp untuk menghindari bias truncation pada round-trip. Gambar PIL berdimensi kosong pada `preprocess_image` juga ditolak dengan `ValueError`.
 
 ### B. Modul Feature Extractor (`src/feature_extractor.py`) — PIC: A1
 * **`get_vgg19_model(device: torch.device | str = "cpu") -> torch.nn.Module`**
