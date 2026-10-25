@@ -2,6 +2,7 @@
 
 import tempfile
 import unittest
+from io import BytesIO
 from pathlib import Path
 from unittest.mock import patch
 
@@ -46,14 +47,47 @@ class TestLoadImage(unittest.TestCase):
         self.assertEqual(result.getpixel((0, 0)), (20, 40, 60))
 
     def test_missing_file(self) -> None:
-        with self.assertRaisesRegex(FileNotFoundError, "tidak ditemukan"):
-            load_image(self.root / "hilang.jpg")
+        for function in (load_image, preprocess_image):
+            with self.subTest(function=function.__name__):
+                with self.assertRaisesRegex(FileNotFoundError, "tidak ditemukan"):
+                    function(self.root / "hilang.jpg")
 
     def test_invalid_file(self) -> None:
         path = self.root / "rusak.png"
         path.write_bytes(b"bukan data gambar")
-        with self.assertRaisesRegex(ValueError, "bukan gambar"):
-            load_image(path)
+        for function in (load_image, preprocess_image):
+            with self.subTest(function=function.__name__):
+                with self.assertRaisesRegex(ValueError, "bukan gambar"):
+                    function(path)
+
+    def test_recognized_png_with_truncated_pixel_data(self) -> None:
+        buffer = BytesIO()
+        Image.new("RGB", (9, 7), (20, 40, 60)).save(buffer, format="PNG")
+        data = buffer.getvalue()
+        path = self.root / "truncated.png"
+        # Keep the PNG header, but only two bytes of the IDAT payload.
+        path.write_bytes(data[:data.index(b"IDAT") + 6])
+        with Image.open(path) as image:
+            self.assertEqual(image.format, "PNG")
+        for function in (load_image, preprocess_image):
+            with self.subTest(function=function.__name__):
+                with self.assertRaises(OSError):
+                    function(path)
+
+    def test_path_same_size_and_none_do_not_resize(self) -> None:
+        path = self.root / "gambar.png"
+        image = Image.new("RGB", (9, 7), (20, 40, 60))
+        image.save(path)
+        expected = preprocess_image(image, size=None)
+        for size in ((7, 9), None):
+            with self.subTest(size=size):
+                with patch.object(Image.Image, "resize",
+                                  side_effect=AssertionError("redundant resize")):
+                    loaded = load_image(path, size=size)
+                    actual = preprocess_image(path, size=size)
+                self.assertEqual(loaded.tobytes(), image.tobytes())
+                self.assertEqual(loaded.size, image.size)
+                torch.testing.assert_close(actual, expected, rtol=0, atol=0)
 
     def test_unsupported_format_despite_extension(self) -> None:
         path = self.root / "palsu.jpg"
@@ -192,6 +226,7 @@ class TestDeprocessImage(unittest.TestCase):
         std = torch.tensor([0.229, 0.224, 0.225]).view(3, 1, 1)
         tensor = ((pixels - mean) / std).unsqueeze(0).requires_grad_()
         before = tensor.detach().clone()
+        loss = tensor.square().sum()
         result = deprocess_image(tensor)
         self.assertEqual(result.size, (3, 2))
         expected = np.array([[0, 0, 64], [128, 255, 255]], dtype=np.uint8)
@@ -200,6 +235,8 @@ class TestDeprocessImage(unittest.TestCase):
         torch.testing.assert_close(tensor, before, rtol=0, atol=0)
         self.assertTrue(tensor.requires_grad)
         self.assertIsNone(tensor.grad)
+        loss.backward()
+        torch.testing.assert_close(tensor.grad, 2 * before, rtol=0, atol=0)
 
     def test_noncontiguous_tensor(self) -> None:
         tensor = torch.zeros(3, 4, 7).transpose(1, 2)

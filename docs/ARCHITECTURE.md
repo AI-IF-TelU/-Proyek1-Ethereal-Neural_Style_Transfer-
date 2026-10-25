@@ -40,7 +40,8 @@ graph TD
   * *Perilaku Resize:*
     * Jika `size=None`: mengembalikan `PIL.Image` RGB dengan ukuran asli.
     * Jika `size=(H, W)`: memvalidasi `size` dan melakukan resize `LANCZOS` sehingga `result.height == H` dan `result.width == W` (yaitu `result.size == (W, H)`).
-  * *Exceptions:* `FileNotFoundError`, `ValueError` (format bukan JPEG/PNG, file rusak, atau `size` tidak valid), `OSError`.
+  * *Exceptions:* `FileNotFoundError`, `ValueError` (format bukan JPEG/PNG, file tidak dikenali, atau `size` tidak valid), `OSError` (akses file atau decoding gagal pada format yang dikenali, termasuk gambar truncated).
+  * *Klarifikasi S02-04:* Pembedaan file tidak dikenali versus kegagalan decode di atas mengikuti implementasi yang sudah ada; bukan perubahan runtime/kontrak atau persetujuan manusia baru.
 * **`preprocess_image(image: Image.Image | str | Path, size: tuple[int, int] | None = (512, 512), device: torch.device | str = "cpu") -> torch.Tensor`**
   * *Deskripsi:* Mengubah gambar menjadi Tensor PyTorch 4D `(1, 3, H, W)` bertipe `torch.float32` yang siap dimasukkan ke VGG-19.
   * *Perilaku Alur & Resize (Tanpa Double Resize):*
