@@ -33,35 +33,31 @@
      * `preprocess_image(image, size=(512, 512), device="cpu") -> torch.Tensor`: jika `image` berupa path, panggil `load_image(image, size=size)`. Jika berupa `PIL.Image`, pastikan RGB dan hanya resize jika `size is not None` dan `(image.height, image.width) != size`. Konversi ke tensor 4D `(1, 3, H, W)` `torch.float32` dan terapkan normalisasi standar ImageNet ($\mu = [0.485, 0.456, 0.406]$, $\sigma = [0.229, 0.224, 0.225]$).
   5. **Deprocessing:** Buat fungsi `deprocess_image(tensor: torch.Tensor) -> Image.Image` untuk menghapus dimensi batch, denormalisasi, clamping ke rentang $[0.0, 1.0]$, dan konversi kembali ke `PIL.Image` RGB.
 * **Target Berkas:** `src/preprocessing.py`, `tests/test_preprocessing.py`
-* **Status:** `IN_PROGRESS`
+* **Status:** `COMPLETED` ✅ (Disetujui oleh A1 pada Handoff #2).
 
-### S02-04: Preprocessing Testing & Handoff
-* **Status:** `PENDING`
-* **Tujuan:** Memastikan seluruh unit test pada `tests/test_preprocessing.py` (termasuk pengujian ukuran non-persegi `size=(H, W)` agar tinggi dan lebar terbukti tidak tertukar) lulus 100%.
-* **Target Berkas:** `tests/test_preprocessing.py`
+### S02-04: Preprocessing Testing & Handoff (Penutupan Stage 2)
+* **Status:** `READY`
+* **Tujuan:**
+  1. Menjalankan verifikasi regresi akhir `tests/test_preprocessing.py` (`pytest` & `unittest`) untuk memastikan seluruh fungsi Stage 2 lulus 100%.
+  2. Mendokumentasikan analisis kompleksitas waktu dan memori final untuk modul `preprocessing.py` pada `docs/COMPLEXITY_ANALYSIS.md` dan `logs/A2/S02-04-LOG.md`.
+  3. Menyelesaikan catatan serah terima (*handoff*) Stage 2 dari A2 kepada A1 (Stage 3: VGG-19 Feature Extractor).
+* **Target Berkas:** `tests/test_preprocessing.py`, `docs/COMPLEXITY_ANALYSIS.md`, `logs/A2/S02-04-LOG.md`
 
 ---
 
-## 💬 Template Prompt untuk AI Agent A2 (S02-03)
+## 💬 Template Prompt untuk AI Agent A2 (S02-04)
 
-Saat Marthin berinteraksi dengan AI di VS Code, gunakan template ini:
+Saat Marthin berinteraksi dengan AI di VS Code untuk menutup Stage 2, gunakan template ini:
 
 ```text
 Saya adalah Marthin M. Tambunan (Anggota A2 - Data Pipeline Engineer).
 Proyek: Neural Style Transfer (PyTorch, VGG-19 Pretrained).
-Referensi Dokumen: docs/ARCHITECTURE.md (Bagian 2.A) dan docs/DECISIONS.md (Keputusan D-005).
+Referensi Dokumen: docs/ARCHITECTURE.md (Bagian 2.A), docs/DECISIONS.md (D-005), dan logs/A2/S02-04-LOG.md.
 
-Langkah Aktif: S02-03 - Image Resize, Tensor Conversion & Normalisasi VGG-19.
+Langkah Aktif: S02-04 - Preprocessing Testing, Analisis Kompleksitas & Handoff Stage 2.
 Tujuan:
-1. Mengaktifkan parameter size=(H, W) pada load_image(image_path, size=None) dengan Image.Resampling.LANCZOS.
-2. Membuat fungsi preprocess_image(image, size=(512, 512), device="cpu") -> torch.Tensor.
-3. Membuat fungsi deprocess_image(tensor: torch.Tensor) -> PIL.Image.Image.
-
-Kebijakan Wajib (D-005):
-- Gunakan nama parameter `size` (bukan `target_size`) di semua fungsi.
-- `size` SELALU berarti `(height, width) = (H, W)`. Balik menjadi `(W, H)` saat memanggil `PIL.Image.resize((W, H), Image.Resampling.LANCZOS)`.
-- Hindari double resize jika preprocess_image menerima path atau PIL.Image yang sudah berukuran (H, W).
-- Validasi ketat parameter `size` (tolak <= 0, bool, atau panjang tuple != 2 dengan ValueError).
-- Normalisasi menggunakan mean=[0.485, 0.456, 0.406] dan std=[0.229, 0.224, 0.225], output 4D [1, 3, H, W] float32.
-- Kerjakan hanya src/preprocessing.py dan tests/test_preprocessing.py (perbarui test_resize_not_silently_ignored menjadi pengujian resize (H, W) non-persegi dan validasi size).
+1. Menjalankan verifikasi akhir test suite `tests/test_preprocessing.py` dan memastikan tidak ada celah kontrak pada `src/preprocessing.py`.
+2. Memperbarui bagian Preprocessing pada `docs/COMPLEXITY_ANALYSIS.md` dengan analisis Big-O waktu dan memori aktual untuk `load_image`, `preprocess_image`, dan `deprocess_image`.
+3. Melengkapi `logs/A2/S02-04-LOG.md` sebagai bukti penutupan Stage 2 untuk diserahkan kepada A1 (Stage 3).
+Jangan menyentuh modul `feature_extractor.py`, `losses.py`, atau `optimization.py`.
 ```
