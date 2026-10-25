@@ -36,20 +36,20 @@
 * **Status:** `COMPLETED` ✅ (Disetujui oleh A1 pada Handoff #2).
 
 ### S02-04: Preprocessing Testing & Handoff (Penutupan Stage 2)
-* **Status:** `IN_PROGRESS` (opsi B CPU telah diverifikasi; acceptance A1 masih pending pada Handoff #3).
+* **Status:** `COMPLETED` ✅ (Disetujui oleh A1 pada Handoff #3 — Stage 2 resmi selesai).
 * **Tujuan:**
-   1. Memverifikasi regresi preprocessing CPU sesuai opsi B pengguna; CUDA dilewati dan belum terverifikasi, bukan klaim seluruh suite repositori lulus 100%.
+  1. Memverifikasi regresi preprocessing CPU sesuai opsi B pengguna; CUDA dilewati dan belum terverifikasi, bukan klaim seluruh suite repositori lulus 100%.
   2. Mendokumentasikan analisis kompleksitas waktu dan memori final untuk modul `preprocessing.py` pada `docs/COMPLEXITY_ANALYSIS.md` dan `logs/A2/S02-04-LOG.md`.
   3. Menyelesaikan catatan serah terima (*handoff*) Stage 2 dari A2 kepada A1 (Stage 3: VGG-19 Feature Extractor).
 * **Target Berkas:** `tests/test_preprocessing.py`, `docs/COMPLEXITY_ANALYSIS.md`, `logs/A2/S02-04-LOG.md`
 * **Hasil aktual:** Pytest 21 passed, 1 skipped (CUDA), 43 subtests passed (12.42s); unittest 22 tests OK (skipped=1); pip check bersih; enam smoke aset aktual in-memory berurutan lulus. Rincian lingkungan, waktu, dan batas bukti pada log S02-04; pin requirements tidak diubah.
-* **Sinkronisasi dokumentasi:** `docs/HANDOFF.md`, `docs/planning/PROGRESS_TRACKER.md`, rencana ini, dan klarifikasi exception minimal `docs/ARCHITECTURE.md`. Tidak ada perubahan runtime; acceptance A1 belum diberikan. Stage 2 tetap `IN_PROGRESS`, Stage 3/S03 tetap `PENDING`.
+* **Sinkronisasi dokumentasi & Penutupan Stage 2:** Disetujui secara resmi oleh Samuel Aaron (A1) pada `docs/HANDOFF.md` (Handoff #3) dan `logs/A1/S02-04-REVIEW-LOG.md`. Stage 2 dinyatakan `COMPLETED`, dan estafet berpindah ke Stage 3 (`S03-01`).
 
 ---
 
 ## 💬 Template Prompt untuk AI Agent A2 (S02-04)
 
-Template planning historis berikut dipertahankan sebagai referensi, bukan instruksi eksekusi ulang atau approval penutupan. Eksekusi aktual mengikuti opsi B CPU dan menunggu review A1:
+Template planning historis berikut dipertahankan sebagai referensi:
 
 ```text
 Saya adalah Marthin M. Tambunan (Anggota A2 - Data Pipeline Engineer).

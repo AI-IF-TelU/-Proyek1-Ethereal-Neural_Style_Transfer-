@@ -29,16 +29,23 @@
   * *Tujuan:* Menetapkan standar PEP 8, konfigurasi testing `pytest`, dan dependensi `requirements.txt`.
   * *Status:* `COMPLETED` ✅
 
-### Stage 3: VGG-19 Feature Extraction (Menunggu Stage 2 Selesai)
-* **S03-01: Feature Extractor Implementation**
-  * *Tujuan:* Memuat VGG-19 pretrained dari `torchvision.models`, membekukan parameter (`requires_grad = False`), dan memotong layer untuk konten (`conv4_2`) dan gaya (`conv1_1`, `conv2_1`, `conv3_1`, `conv4_1`, `conv5_1`).
+### Stage 3: VGG-19 Feature Extraction (Aktif — Stage 2 Selesai)
+* **S03-01: Feature Extractor Implementation (Kebijakan D-006)**
+  * *Tujuan:*
+    1. Memuat blok konvolusi `torchvision.models.vgg19(weights=weights).features` (default `VGG19_Weights.DEFAULT`, mendukung `weights=None` untuk unit test cepat/offline).
+    2. Memotong (*truncate*) sekuens `features[:29]` hanya hingga layer terakhir yang dibutuhkan (`conv5_1` di indeks `'28'`), mengganti seluruh `nn.ReLU(inplace=True)` menjadi `nn.ReLU(inplace=False)` demi keamanan *autograd* dan keutuhan aktivasi layer `Conv2d`.
+    3. Membekukan seluruh parameter (`requires_grad = False`), mengunci mode `.eval()`, dan memindahkan model ke `device`.
+    4. Menyediakan `get_features(image_tensor, model, layers=None)` yang memvalidasi tensor 4D `(N, 3, H, W)` bertipe floating dan mengekstrak dictionary fitur untuk layer konten (`'21': 'conv4_2'`) dan gaya (`'0': 'conv1_1'`, `'5': 'conv2_1'`, `'10': 'conv3_1'`, `'19': 'conv4_1'`, `'28': 'conv5_1'`) **tanpa** membungkus *forward pass* dalam `torch.no_grad()` agar gradien dari *loss* tetap mengalir ke tensor gambar hasil (`generated_img`).
   * *Target Berkas:* `src/feature_extractor.py`
-  * *Dependensi:* Stage 2 selesai (data loader A2 teruji).
-  * *Acceptance Criteria:* Model mengembalikan dictionary tensor fitur sesuai layer yang diminta tanpa mengubah bobot VGG-19.
-* **S03-02: Feature Extractor Testing**
-  * *Tujuan:* Menjalankan unit test untuk memvalidasi shape tensor output fitur dan memastikan gradien tidak mengalir ke bobot VGG.
-  * *Target Berkas:* `tests/test_feature_extractor.py`
-  * *Acceptance Criteria:* `pytest tests/test_feature_extractor.py` lolos 100%.
+  * *Dependensi:* Stage 2 selesai (`COMPLETED`).
+  * *Status:* `READY` 🟢 (Spesifikasi D-006 telah disetujui dan siap diimplementasikan).
+* **S03-02: Feature Extractor Testing & Handoff Stage 3**
+  * *Tujuan:*
+    1. Menyusun unit test komprehensif pada `tests/test_feature_extractor.py` untuk menguji pembekuan bobot (`requires_grad=False`), mode `.eval()`, penggantian `ReLU(inplace=False)`, bentuk tensor fitur keluaran (`conv1_1`..`conv5_1`, `conv4_2`) pada dimensi persegi & non-persegi, aliran gradien ke `image_tensor` (`image_tensor.grad is not None`) sementara parameter VGG tetap `grad is None`, serta validasi error input.
+    2. Memperbarui analisis kompleksitas waktu dan ruang bagian Feature Extractor pada `docs/COMPLEXITY_ANALYSIS.md`.
+    3. Mencatat log `logs/A1/S03-01-LOG.md` & `logs/A1/S03-02-LOG.md` serta serah terima ke A3 (Stage 4) di `docs/HANDOFF.md`.
+  * *Target Berkas:* `tests/test_feature_extractor.py`, `docs/COMPLEXITY_ANALYSIS.md`, `docs/HANDOFF.md`
+  * *Status:* `PENDING`
 
 ### Stage 6: Integration & Evaluation
 * **S06-01: Module Integration**
@@ -58,14 +65,9 @@ Saat Anda berinteraksi dengan AI di VS Code, gunakan template ini agar AI tetap 
 ```text
 Saya adalah Samuel Aaron (Anggota A1 - Arsitek & Lead).
 Proyek: Neural Style Transfer (PyTorch, VGG-19 Frozen, Vibe Coding).
-Referensi Dokumen: docs/planning/PROGRESS_TRACKER.md dan docs/ARCHITECTURE.md.
+Referensi Dokumen: docs/planning/PROGRESS_TRACKER.md, docs/ARCHITECTURE.md, dan docs/DECISIONS.md (D-006).
 
-Langkah Aktif: [Misal: S03-01 - Ekstraksi Fitur VGG-19]
-Tujuan: [Tuliskan apa yang ingin dibuat/diuji]
-Batasan: Bobot VGG-19 wajib dibekukan (requires_grad = False). Jangan mengubah modul preprocessing (milik A2) atau losses (milik A3).
-
-Berikan:
-1. Rencana implementasi dan kontrak fungsi get_features().
-2. Analisis tensor shape input dan output.
-3. Kode implementasi untuk src/feature_extractor.py dan unit test-nya.
+Langkah Aktif: [Misal: S03-01 & S03-02 - Ekstraksi Fitur VGG-19]
+Tujuan: Mengimplementasikan dan menguji src/feature_extractor.py dan tests/test_feature_extractor.py sesuai kontrak D-006.
+Batasan: Bobot VGG-19 wajib dibekukan (requires_grad = False) dan ReLU inplace=False. Jangan mengubah modul preprocessing (milik A2) atau losses (milik A3).
 ```

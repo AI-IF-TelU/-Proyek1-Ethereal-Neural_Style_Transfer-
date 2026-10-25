@@ -56,10 +56,26 @@ graph TD
   * *Klarifikasi Validasi S02-03:* Input bukan tensor ditolak dengan `TypeError`; dtype non-floating, nilai NaN/Inf, dan dimensi spasial kosong ditolak dengan `ValueError`. Konversi ke `uint8` membulatkan nilai piksel terdekat setelah clamp untuk menghindari bias truncation pada round-trip. Gambar PIL berdimensi kosong pada `preprocess_image` juga ditolak dengan `ValueError`.
 
 ### B. Modul Feature Extractor (`src/feature_extractor.py`) — PIC: A1
-* **`get_vgg19_model(device: torch.device | str = "cpu") -> torch.nn.Module`**
-  * *Deskripsi:* Memuat lapisan konvolusi `vgg19(weights=VGG19_Weights.DEFAULT).features` dan membekukan seluruh parameter (`requires_grad = False`).
-* **`get_features(image_tensor: torch.Tensor, model: torch.nn.Module, layers: dict = None) -> dict[str, torch.Tensor]`**
-  * *Deskripsi:* Melakukan forward pass dan mengekstrak tensor representasi konten (`conv4_2`) dan gaya (`conv1_1`, `conv2_1`, `conv3_1`, `conv4_1`, `conv5_1`).
+
+> **Kebijakan Ekstraksi Fitur VGG-19 Beku (Keputusan D-006):**
+> 1. Pemetaan layer standar Gatys et al. (`DEFAULT_LAYERS`):
+>    * `'0': 'conv1_1'` (*Style*, $64$ ch, $H \times W$)
+>    * `'5': 'conv2_1'` (*Style*, $128$ ch, $\lfloor H/2 \rfloor \times \lfloor W/2 \rfloor$)
+>    * `'10': 'conv3_1'` (*Style*, $256$ ch, $\lfloor H/4 \rfloor \times \lfloor W/4 \rfloor$)
+>    * `'19': 'conv4_1'` (*Style*, $512$ ch, $\lfloor H/8 \rfloor \times \lfloor W/8 \rfloor$)
+>    * `'21': 'conv4_2'` (*Content*, $512$ ch, $\lfloor H/8 \rfloor \times \lfloor W/8 \rfloor$)
+>    * `'28': 'conv5_1'` (*Style*, $512$ ch, $\lfloor H/16 \rfloor \times \lfloor W/16 \rfloor$)
+> 2. Sekuens `vgg19.features` dipotong hingga indeks `'28'` (`features[:29]`) dan seluruh `nn.ReLU(inplace=True)` diganti menjadi `nn.ReLU(inplace=False)` agar tensor fitur `Conv2d` tidak termodifikasi *in-place* oleh layer ReLU berikutnya serta menjaga keutuhan grafik *autograd*.
+> 3. Seluruh parameter model dibekukan (`requires_grad = False`) dan model diset ke `.eval()`.
+
+* **`get_vgg19_model(device: torch.device | str = "cpu", weights: VGG19_Weights | None = VGG19_Weights.DEFAULT) -> torch.nn.Sequential`**
+  * *Deskripsi:* Memuat lapisan konvolusi `vgg19(weights=weights).features[:29]`, mengganti `ReLU(inplace=True)` menjadi `ReLU(inplace=False)`, membekukan seluruh parameter (`requires_grad = False`), mengunci mode `.eval()`, dan memindahkan model ke `device`.
+  * *Catatan Pengujian:* Default `weights=VGG19_Weights.DEFAULT` memuat bobot ImageNet-1K; pengiriman `weights=None` didukung untuk pengujian struktur dan *autograd* secara cepat/offline.
+* **`get_features(image_tensor: torch.Tensor, model: torch.nn.Module, layers: dict[str, str] | None = None) -> dict[str, torch.Tensor]`**
+  * *Deskripsi:* Melakukan *forward pass* sekuensial melalui `model` (tanpa `torch.no_grad()` agar gradien tetap mengalir ke `image_tensor` jika `requires_grad=True`) dan mengekstrak dictionary tensor fitur sesuai pemetaan `layers` (default `DEFAULT_LAYERS`).
+  * *Validasi & Exceptions:*
+    * `TypeError` jika `image_tensor` bukan `torch.Tensor` atau `model` bukan `torch.nn.Module`.
+    * `ValueError` jika `image_tensor` bukan 4D `(N, 3, H, W)` dengan `N >= 1`, `C == 3`, `H >= 16`, `W >= 16`, bukan floating-point, mengandung `NaN`/`Inf`, atau jika `layers` kosong / meminta indeks layer yang tidak ada di dalam `model`.
 
 ### C. Modul Loss Functions (`src/losses.py`) — PIC: A3
 * **`gram_matrix(tensor: torch.Tensor) -> torch.Tensor`**

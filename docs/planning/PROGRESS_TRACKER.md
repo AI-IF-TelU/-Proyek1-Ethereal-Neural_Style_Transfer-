@@ -21,8 +21,8 @@ Dokumen ini adalah **pusat kendali dan status resmi (*Single Source of Truth*)**
 | :---: | :--- | :---: | :---: | :--- |
 | **Stage 0** | Planning & Design | A1 (Lead) & Tim | `COMPLETED` | Seluruh dokumen master di `docs/` disetujui. |
 | **Stage 1** | Project Scaffolding | A1 | `COMPLETED` | Struktur folder, virtualenv, dan testing awal siap. |
-| **Stage 2** | Data Pipeline | A2 | `IN_PROGRESS` | Preprocessing selesai dan lolos `test_preprocessing.py`. |
-| **Stage 3** | VGG-19 Feature Extractor | A1 | `PENDING` | Layer VGG-19 beku tervalidasi bentuk tensornya. |
+| **Stage 2** | Data Pipeline | A2 | `COMPLETED` | Preprocessing selesai dan lolos `test_preprocessing.py`. |
+| **Stage 3** | VGG-19 Feature Extractor | A1 | `IN_PROGRESS` | Layer VGG-19 beku tervalidasi bentuk tensornya. |
 | **Stage 4** | Loss & Optimization | A3 | `PENDING` | Gram Matrix, Content/Style Loss teruji numerik. |
 | **Stage 5** | QA & Dokumentasi | A4 | `PENDING` | Integration test lulus tanpa regresi, log terverifikasi. |
 | **Stage 6** | Integrasi & Evaluasi | A1 & Tim | `PENDING` | NST berjalan end-to-end menghasilkan gambar valid. |
@@ -48,8 +48,8 @@ Dokumen ini adalah **pusat kendali dan status resmi (*Single Source of Truth*)**
 | **S02-01** | A2 | Perencanaan Format Data & Pasangan Gambar | Stage 1 | `COMPLETED` | Kedua aset valid; A2 meminta lanjut S02-02 | [Catatan transisi](../../logs/A2/S02-02-LOG.md) |
 | **S02-02** | A2 | Implementasi Image Loader (Pillow/RGB) | S02-01 | `COMPLETED` | 8 tes unittest lulus; disetujui A1 | [S02-02](../../logs/A2/S02-02-LOG.md) |
 | **S02-03** | A2 | Image Resize, Tensor & Normalisasi VGG | S02-02 | `COMPLETED` | Pytest: 19 passed, 1 skipped (CUDA), 35 subtests passed; smoke 6 kasus lulus; disetujui A1 | [S02-03](../../logs/A2/S02-03-LOG.md) |
-| **S02-04** | A2 | Unit Testing & Handoff Preprocessing | S02-03 | `IN_PROGRESS` | Opsi B CPU: pytest 21 passed, 1 skipped CUDA, 43 subtests; unittest 22 tests OK skipped=1; 6 smoke lulus; review A1 pending, bukan full-repo test | [S02-04 (Review A1 pending)](../../logs/A2/S02-04-LOG.md) |
-| **S03-01** | A1 | Load VGG-19 Pretrained & Freezing Bobot | Stage 2 | `PENDING` | Grad flow check | [logs/A1/](file:///d:/diskb/KULIAH/EKSTENSI/smt3/genai/tubesgenai/neural-style-transfer/logs/A1/) |
+| **S02-04** | A2 | Unit Testing & Handoff Preprocessing | S02-03 | `COMPLETED` | Opsi B CPU: pytest 21 passed, 1 skipped CUDA, 43 subtests; 6 smoke lulus; disetujui A1 | [S02-04](../../logs/A2/S02-04-LOG.md) / [Review A1](../../logs/A1/S02-04-REVIEW-LOG.md) |
+| **S03-01** | A1 | Load VGG-19 Pretrained & Freezing Bobot | Stage 2 | `READY` | Grad flow check | [Plan S03-01](../../logs/A1/S03-01-ARCH-SPEC-LOG.md) |
 | **S03-02** | A1 | Ekstraksi Layer Content & Style | S03-01 | `PENDING` | `test_feature_extractor.py` | [logs/A1/](file:///d:/diskb/KULIAH/EKSTENSI/smt3/genai/tubesgenai/neural-style-transfer/logs/A1/) |
 | **S04-01** | A3 | Implementasi Matematis Gram Matrix | Stage 3 | `PENDING` | Simetri & Shape C×C | [logs/A3/](file:///d:/diskb/KULIAH/EKSTENSI/smt3/genai/tubesgenai/neural-style-transfer/logs/A3/) |
 | **S04-02** | A3 | Formulasi Content Loss (MSE Fitur) | S04-01 | `PENDING` | Numerik loss test | [logs/A3/](file:///d:/diskb/KULIAH/EKSTENSI/smt3/genai/tubesgenai/neural-style-transfer/logs/A3/) |
