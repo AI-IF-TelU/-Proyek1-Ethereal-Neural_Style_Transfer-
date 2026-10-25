@@ -1,3 +1,1 @@
-\"\"\"
-Unit test optimization (placeholder)
-\"\"\"
+"""Unit test optimization (placeholder)."""
