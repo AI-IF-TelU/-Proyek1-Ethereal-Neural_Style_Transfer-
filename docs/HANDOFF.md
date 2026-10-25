@@ -73,3 +73,33 @@ Dokumen ini mencatat riwayat resmi serah terima antar-tahap dan persetujuan hasi
 - **Acceptance:** **APPROVED (Disetujui)** oleh Samuel Aaron (A1) — **Stage 2 Resmi Ditutup (`COMPLETED`)**.
 - **Langkah Berikutnya:** Tongkat estafet resmi berpindah kepada Samuel Aaron (A1) untuk mengeksekusi **Stage 3 (`S03-01` & `S03-02`: VGG-19 Feature Extractor)** berdasarkan kontrak arsitektur `D-006`.
 - **Tanggal / Waktu:** 2026-10-25 16:25 WIB
+
+---
+
+### Handoff #4: S03-01 & S03-02 (Penutupan Stage 3: VGG-19 Feature Extractor & Serah Terima ke Stage 4 / A3)
+- **Task ID:** `S03-01` & `S03-02`
+- **Dari / Ke:** Samuel Aaron (A1 - Ketua / Arsitek) ➔ Hafiz Fajar Ramadhan (A3 - Loss Function & Optimization Engineer)
+- **File Berubah:**
+  - `src/feature_extractor.py`
+  - `tests/test_feature_extractor.py`
+  - `docs/COMPLEXITY_ANALYSIS.md`
+  - `docs/DECISIONS.md` (`D-006`)
+  - `docs/ARCHITECTURE.md`
+  - `docs/planning/A1_PLAN.md`
+  - `docs/planning/PROGRESS_TRACKER.md`
+  - `logs/A1/S03-01-ARCH-SPEC-LOG.md`
+  - `logs/A1/S03-01-LOG.md`
+  - `logs/A1/S03-02-LOG.md`
+- **Kontrak / API (Sesuai Keputusan D-006):**
+  - `DEFAULT_LAYERS: dict[str, str]` = `{"0": "conv1_1", "5": "conv2_1", "10": "conv3_1", "19": "conv4_1", "21": "conv4_2", "28": "conv5_1"}`
+  - `CONTENT_LAYERS: tuple[str, ...]` = `("conv4_2",)`
+  - `STYLE_LAYERS: tuple[str, ...]` = `("conv1_1", "conv2_1", "conv3_1", "conv4_1", "conv5_1")`
+  - `get_vgg19_model(device: torch.device | str = "cpu", weights: VGG19_Weights | None = VGG19_Weights.DEFAULT) -> nn.Sequential` (Memuat `vgg19.features[:29]`, mengganti `ReLU(inplace=True)` menjadi `ReLU(inplace=False)`, membekukan seluruh bobot `requires_grad=False`, dan mengunci `.eval()`).
+  - `get_features(image_tensor: torch.Tensor, model: nn.Module, layers: dict[str, str] | None = None) -> dict[str, torch.Tensor]` (Mengekstrak peta fitur tanpa `torch.no_grad()` sehingga gradien *autograd* mengalir ke `image_tensor` saat `requires_grad=True`).
+- **Test Status:**
+  - `tests/test_feature_extractor.py`: **8 passed, 1 skipped (CUDA), 17 subtests passed**.
+  - Gabungan Stage 2 + Stage 3 (`pytest tests/test_feature_extractor.py tests/test_preprocessing.py -v -rs`): **29 passed, 2 skipped (CUDA), 60 subtests passed** (15.67s).
+- **Known Issues:** Tidak ada; pengujian penempatan perangkat CUDA dilewati secara otomatis (`skipUnless`) pada mesin CPU.
+- **Acceptance:** **APPROVED (Disetujui)** oleh Samuel Aaron (A1) — **Stage 3 Resmi Ditutup (`COMPLETED`)**.
+- **Langkah Berikutnya:** Tongkat estafet resmi diserahkan kepada **Hafiz Fajar Ramadhan (A3)** untuk memulai **Stage 4 (`S04-01` s.d. `S04-05`: Gram Matrix, Content/Style Loss & Pixel Optimization)** pada `src/losses.py` dan `src/optimization.py`.
+- **Tanggal / Waktu:** 2026-10-25 16:54 WIB
