@@ -79,6 +79,7 @@ Dokumen ini mencatat riwayat resmi serah terima antar-tahap dan persetujuan hasi
 ### Handoff #4: S03-01 & S03-02 (Penutupan Stage 3: VGG-19 Feature Extractor & Serah Terima ke Stage 4 / A3)
 - **Task ID:** `S03-01` & `S03-02`
 - **Dari / Ke:** Samuel Aaron (A1 - Ketua / Arsitek) ➔ Hafiz Fajar Ramadhan (A3 - Loss Function & Optimization Engineer)
+- **Git Commit Referensi:** `259de1a`
 - **File Berubah:**
   - `src/feature_extractor.py`
   - `tests/test_feature_extractor.py`
@@ -103,3 +104,24 @@ Dokumen ini mencatat riwayat resmi serah terima antar-tahap dan persetujuan hasi
 - **Acceptance:** **APPROVED (Disetujui)** oleh Samuel Aaron (A1) — **Stage 3 Resmi Ditutup (`COMPLETED`)**.
 - **Langkah Berikutnya:** Tongkat estafet resmi diserahkan kepada **Hafiz Fajar Ramadhan (A3)** untuk memulai **Stage 4 (`S04-01` s.d. `S04-05`: Gram Matrix, Content/Style Loss & Pixel Optimization)** pada `src/losses.py` dan `src/optimization.py`.
 - **Tanggal / Waktu:** 2026-10-25 16:54 WIB
+
+---
+
+### Handoff #5: S04-01 (Implementasi Matematis Gram Matrix)
+- **Task ID:** `S04-01`
+- **Dari / Ke:** Hafiz Fajar Ramadhan (A3) ➔ Samuel Aaron (A1 - Ketua / Arsitek)
+- **Git Commit Referensi:** `51637561157ff56a75dbd37ccf9b7db4f4773a27`
+- **File Berubah:**
+  - `src/losses.py`
+  - `tests/test_losses.py`
+  - `tests/test_optimization.py` (perbaikan sintaksis docstring placeholder)
+  - `docs/planning/PROGRESS_TRACKER.md`
+  - `logs/A3/S04-01-LOG.md`
+- **Kontrak / API:** `gram_matrix(tensor: torch.Tensor) -> torch.Tensor` (Menerima tensor fitur 4D `(B, C, H, W)` atau 3D `(C, H, W)`, menghitung $G = (F \cdot F^T) / (C \cdot H \cdot W)$ menggunakan `torch.bmm`, mengembalikan `(B, C, C)` simetris dengan aliran gradien *autograd* utuh).
+- **Test Status:**
+  - `tests/test_losses.py`: **7/7 passed** (`TestGramMatrix`).
+  - Seluruh repositori (`pytest tests/ -v -rs`): **36 passed, 2 skipped (CUDA), 60 subtests passed** (16.24s).
+- **Known Issues:** Disarankan mengganti `tensor.view(...)` menjadi `tensor.reshape(...)` pada tahap `S04-02` agar mendukung tensor *non-contiguous*.
+- **Acceptance:** **APPROVED (Disetujui)** oleh Samuel Aaron (A1).
+- **Langkah Berikutnya:** A3 (Hafiz Fajar Ramadhan) resmi diberikan izin melanjutkan **`S04-02` (*Content Loss*)** dan **`S04-03` (*Style Loss & Total Loss*)** pada `src/losses.py` serta `tests/test_losses.py` sesuai Keputusan Arsitektur **`D-007`**.
+- **Tanggal / Waktu:** 2026-10-26 14:03 WIB

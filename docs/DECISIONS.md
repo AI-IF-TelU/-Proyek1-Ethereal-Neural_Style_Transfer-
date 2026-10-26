@@ -8,6 +8,7 @@
 | D-004 | Batas scope image loader S02-02 | Penolakan parameter size hingga S02-03 | Resize di loader | A1 (Samuel) & A2 (Marthin) |
 | D-005 | Kebijakan Tunggal Parameter `size=(H, W)` & Preprocessing Tensor S02-03 | Mencegah tertukarnya `(W, H)` Pillow vs `(H, W)` PyTorch serta menyamakan nama parameter `size` | Memakai `target_size` terpisah atau urutan `(W, H)` | A1 (Samuel) & A2 (Marthin) |
 | D-006 | Spesifikasi Kontrak & Arsitektur VGG-19 Feature Extractor (`S03-01` & `S03-02`) | Menjamin ekstraksi fitur `conv1_1`..`conv5_1` & `conv4_2` bebas mutasi `ReLU(inplace=True)`, hemat memori lewat pemotongan `features[:29]`, dan aman bagi aliran gradien ke `generated_img` | Menggunakan `vgg19.features` utuh 37 layer dengan `ReLU(inplace=True)` | A1 (Samuel Aaron - Lead/Arsitek) |
+| D-007 | Spesifikasi Kontrak Fungsi Loss NST (`S04-01` s.d. `S04-03` pada `src/losses.py`) | Menetapkan kontrak validasi, `.detach()` pada target fitur/Gram, serta bobot default `DEFAULT_STYLE_WEIGHTS` agar perhitungan loss konsisten dengan Stage 3 dan aman bagi *backward pass* di Stage 4 | Menghitung ulang fitur target dengan grafik autograd aktif | A1 (Samuel) & A3 (Hafiz) |
 
 ---
 
@@ -103,3 +104,36 @@
 - **Persetujuan:** Disetujui oleh Samuel Aaron (A1 - Ketua / Arsitek).
 - **Dampak:** `docs/ARCHITECTURE.md`, `src/feature_extractor.py`, `tests/test_feature_extractor.py`, `docs/planning/A1_PLAN.md`.
 - **Pencatatan Sistem:** 2026-10-25T16:25:31+07:00 (WIB).
+
+---
+
+## D-007: Spesifikasi Kontrak Fungsi Loss NST (`S04-01` s.d. `S04-03` pada `src/losses.py`)
+
+- **Konteks:**
+  1. Setelah `gram_matrix(tensor)` berhasil diimplementasikan dan disetujui pada `S04-01`, langkah `S04-02` (*Content Loss*) dan `S04-03` (*Style Loss & Total Loss*) pada `src/losses.py` memerlukan aturan yang tegas terkait penanganan gradien target (`content_features` dan `style_gram_dict`), bobot default multi-layer (`layer_weights`), serta ketahanan terhadap tensor *non-contiguous*.
+- **Keputusan Teknis (`D-007`):**
+  1. **Penyempurnaan `gram_matrix(tensor: torch.Tensor) -> torch.Tensor`:**
+     - Menggunakan `tensor.reshape(batch_size, channels, height * width)` (menggantikan `.view(...)`) agar tetap berfungsi tanpa galat apabila menerima tensor *non-contiguous*.
+  2. **Kontrak `compute_content_loss(gen_features: torch.Tensor, content_features: torch.Tensor) -> torch.Tensor` (`S04-02`):**
+     - Validasi: Kedua argumen wajib berupa `torch.Tensor` (`TypeError` jika bukan), berdimensi 4D `(B, C, H, W)` dengan setiap dimensi $\ge 1$, bertipe floating-point, *finite* (tanpa `NaN`/`Inf`), serta memiliki `shape` dan `device` yang identik (`ValueError` jika melanggar).
+     - Perhitungan: Menggunakan `torch.nn.functional.mse_loss(gen_features, content_features.detach())` sehingga gradien hanya mengalir menuju `gen_features` dan tidak pernah meminta gradien pada target `content_features`.
+  3. **Kontrak `compute_style_loss(gen_features_dict: dict[str, torch.Tensor], style_gram_dict: dict[str, torch.Tensor], layer_weights: dict[str, float] | None = None) -> torch.Tensor` (`S04-03`):**
+     - Konstanta bobot default:
+       ```python
+       DEFAULT_STYLE_WEIGHTS: dict[str, float] = {
+           "conv1_1": 0.2,
+           "conv2_1": 0.2,
+           "conv3_1": 0.2,
+           "conv4_1": 0.2,
+           "conv5_1": 0.2,
+       }
+       ```
+     - Jika `layer_weights is None`, gunakan `DEFAULT_STYLE_WEIGHTS`.
+     - Validasi: `gen_features_dict`, `style_gram_dict`, dan `layer_weights` wajib berupa `dict` non-kosong (`TypeError`/`ValueError`). Setiap kunci layer $l$ pada `layer_weights` wajib ada di `gen_features_dict` dan `style_gram_dict`, dengan bobot $w_l \in \mathbb{R}_{\ge 0}$ (`int | float`, bukan `bool`, *finite*).
+     - Fleksibilitas Target `style_gram_dict[l]`: Menerima tensor Gram Matrix 3D `(B, C, C)` yang sudah dihitung sebelumnya (*precomputed*) **maupun** tensor peta fitur 4D `(B, C, H, W)` (yang secara otomatis dikonversi melalui `gram_matrix(target.detach())`). Seluruh target wajib di-`.detach()` sebelum dihitung `w_l * F.mse_loss(gram_gen, gram_target)`.
+  4. **Kontrak `compute_total_loss(content_loss: torch.Tensor, style_loss: torch.Tensor, alpha: float = 1.0, beta: float = 1e4) -> torch.Tensor` (`S04-03`):**
+     - Validasi: `content_loss` dan `style_loss` wajib berupa `torch.Tensor` skalar (`ndim == 0` atau `numel() == 1`) bertipe floating-point yang *finite* pada `device` yang sama (`TypeError`/`ValueError`). Parameter `alpha` dan `beta` wajib berupa angka `int | float` (bukan `bool`), *finite*, dan $\ge 0$.
+     - Mengembalikan tensor skalar $\alpha \cdot \mathcal{L}_{\text{content}} + \beta \cdot \mathcal{L}_{\text{style}}$.
+- **Persetujuan:** Disetujui oleh Samuel Aaron (A1 - Ketua / Arsitek) untuk dieksekusi oleh Hafiz Fajar Ramadhan (A3).
+- **Dampak:** `docs/ARCHITECTURE.md`, `docs/planning/A3_PLAN.md`, `src/losses.py`, `tests/test_losses.py`.
+- **Pencatatan Sistem:** 2026-10-26T14:03:00+07:00 (WIB).

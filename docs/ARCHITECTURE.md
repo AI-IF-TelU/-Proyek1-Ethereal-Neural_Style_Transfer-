@@ -78,14 +78,19 @@ graph TD
     * `ValueError` jika `image_tensor` bukan 4D `(N, 3, H, W)` dengan `N >= 1`, `C == 3`, `H >= 16`, `W >= 16`, bukan floating-point, mengandung `NaN`/`Inf`, atau jika `layers` kosong / meminta indeks layer yang tidak ada di dalam `model`.
 
 ### C. Modul Loss Functions (`src/losses.py`) — PIC: A3
+
+> **Kebijakan Fungsi Kerugian NST (Keputusan D-007):**
+> 1. `DEFAULT_STYLE_WEIGHTS: dict[str, float] = {"conv1_1": 0.2, "conv2_1": 0.2, "conv3_1": 0.2, "conv4_1": 0.2, "conv5_1": 0.2}`.
+> 2. Target referensi (`content_features` dan `style_gram_dict`) wajib di-`.detach()` di dalam perhitungan loss agar gradien hanya mengalir menuju fitur gambar hasil (`gen_features`).
+
 * **`gram_matrix(tensor: torch.Tensor) -> torch.Tensor`**
-  * *Deskripsi:* Menghitung korelasi channel $G = F \times F^T$ dinormalisasi dengan $C \times H \times W$. Output shape `(1, C, C)`.
+  * *Deskripsi:* Menerima tensor fitur 4D `(B, C, H, W)` atau 3D `(C, H, W)` floating-point *finite*, merata-ratakan dimensi spasial dengan `.reshape(B, C, H * W)`, menghitung korelasi channel $G = (F \cdot F^T) / (C \cdot H \cdot W)$ via `torch.bmm`, dan mengembalikan tensor `(B, C, C)`.
 * **`compute_content_loss(gen_features: torch.Tensor, content_features: torch.Tensor) -> torch.Tensor`**
-  * *Deskripsi:* MSE antara fitur konten asli dan fitur konten gambar hasil.
-* **`compute_style_loss(gen_features_dict: dict, style_gram_dict: dict, layer_weights: dict) -> torch.Tensor`**
-  * *Deskripsi:* Penjumlahan berbobot dari selisih MSE Gram Matrix pada multi-layer.
-* **`compute_total_loss(content_loss, style_loss, alpha=1.0, beta=1e4) -> torch.Tensor`**
-  * *Deskripsi:* $L_{total} = \alpha \cdot L_{content} + \beta \cdot L_{style}$.
+  * *Deskripsi:* Memvalidasi kesamaan `shape` 4D `(B, C, H, W)`, `device`, tipe floating-point, dan nilai *finite*, lalu menghitung `F.mse_loss(gen_features, content_features.detach())`.
+* **`compute_style_loss(gen_features_dict: dict[str, torch.Tensor], style_gram_dict: dict[str, torch.Tensor], layer_weights: dict[str, float] | None = None) -> torch.Tensor`**
+  * *Deskripsi:* Menghitung penjumlahan berbobot $\sum_l w_l \cdot \text{MSE}(G(F_{\text{gen}}^l), G_{\text{style}}^l.\text{detach}())$ pada multi-layer style (default `layer_weights = DEFAULT_STYLE_WEIGHTS`). Mendukung `style_gram_dict[l]` yang sudah berupa Gram Matrix 3D `(B, C, C)` maupun peta fitur 4D `(B, C, H, W)`.
+* **`compute_total_loss(content_loss: torch.Tensor, style_loss: torch.Tensor, alpha: float = 1.0, beta: float = 1e4) -> torch.Tensor`**
+  * *Deskripsi:* Memvalidasi `content_loss` dan `style_loss` sebagai tensor skalar floating-point *finite* serta $\alpha, \beta \ge 0$ (bukan `bool`), lalu menghitung $L_{total} = \alpha \cdot L_{content} + \beta \cdot L_{style}$.
 
 ### D. Modul Optimasi (`src/optimization.py`) — PIC: A3
 * **`run_style_transfer(...) -> tuple[torch.Tensor, list[float]]`**
