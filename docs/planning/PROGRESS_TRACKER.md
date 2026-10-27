@@ -42,7 +42,7 @@ Dokumen ini adalah **pusat kendali dan status resmi (*Single Source of Truth*)**
 | :--- | :---: | :--- | :---: | :---: | :---: | :--- |
 | **S00-01** | A1 | Analisis Kebutuhan (PRD & SRS) | - | `COMPLETED` | Validasi dokumen | [S00-02](../../logs/A1/S00-02-LOG.md) |
 | **S00-02** | A1 | Perancangan Arsitektur & Kontrak Modul | S00-01 | `COMPLETED` | Mermaid review | [S00-02](../../logs/A1/S00-02-LOG.md) |
-| **S00-03** | A4 | Kebijakan Logging AI & Format Log | S00-02 | `COMPLETED` | Skrip logging tested | [logs/A4/](file:///d:/diskb/KULIAH/EKSTENSI/smt3/genai/tubesgenai/neural-style-transfer/logs/A4/) |
+| **S00-03** | A4 | Kebijakan Logging AI & Format Log | S00-02 | `COMPLETED` | Pytest skrip logging: 8 passed | [S00-03](../../logs/A4/S00-03-LOG.md) |
 | **S01-01** | A1 | Struktur Folder & Git Scaffolding | Stage 0 | `COMPLETED` | Folder & Git tree | [S01-01](../../logs/A1/S01-01-LOG.md) |
 | **S01-02** | A1 | Coding Standards & Pytest Config | S01-01 | `COMPLETED` | `pytest -q` (pass) | [S01-01](../../logs/A1/S01-01-LOG.md) |
 | **S02-01** | A2 | Perencanaan Format Data & Pasangan Gambar | Stage 1 | `COMPLETED` | Kedua aset valid; A2 meminta lanjut S02-02 | [Catatan transisi](../../logs/A2/S02-02-LOG.md) |
@@ -56,12 +56,12 @@ Dokumen ini adalah **pusat kendali dan status resmi (*Single Source of Truth*)**
 | **S04-03** | A3 | Formulasi Style Loss (Multi-layer Gram) | S04-02 | `COMPLETED` | Pytest: 20 passed (TestStyleLoss & TestTotalLoss); disetujui A1 | [S04-03](../../logs/A3/S04-03-LOG.md) / [Review A1](../../logs/A1/S04-02-03-REVIEW-LOG.md) |
 | **S04-04** | A3 | Optimization Loop Piksel (L-BFGS/Adam) | S04-03 | `COMPLETED` | Pytest: 9 passed (TestRunStyleTransfer); disetujui A1 | [S04-04](../../logs/A3/S04-04-LOG.md) / [Review A1](../../logs/A1/S04-04-05-REVIEW-LOG.md) |
 | **S04-05** | A3 | Testing & Tuning Hyperparameter Loss | S04-04 | `COMPLETED` | Pytest: 58 passed repositori; analisis kompleksitas selesai; disetujui A1 | [S04-05](../../logs/A3/S04-05-LOG.md) / [Review A1](../../logs/A1/S04-04-05-REVIEW-LOG.md) |
-| **S05-01** | A4 | Audit Kepatuhan Kode & Standar PEP 8 | Stage 4 | `READY` | Linter / Review | [logs/A4/](file:///d:/diskb/KULIAH/EKSTENSI/smt3/genai/tubesgenai/neural-style-transfer/logs/A4/) |
-| **S05-02** | A4 | Validasi & Konsolidasi Log Interaksi AI | S05-01 | `PENDING` | Audit format log | [logs/A4/](file:///d:/diskb/KULIAH/EKSTENSI/smt3/genai/tubesgenai/neural-style-transfer/logs/A4/) |
-| **S05-03** | A4 | Integration Testing & Error Troubleshooting | S05-02 | `PENDING` | `pytest tests/` | [logs/A4/](file:///d:/diskb/KULIAH/EKSTENSI/smt3/genai/tubesgenai/neural-style-transfer/logs/A4/) |
-| **S06-01** | A1 | Integrasi End-to-End Pipeline NST | Stage 5 | `PENDING` | `python main.py` | [logs/A1/](file:///d:/diskb/KULIAH/EKSTENSI/smt3/genai/tubesgenai/neural-style-transfer/logs/A1/) |
-| **S06-02** | A1 | Evaluasi Output Gambar & Grafik Loss | S06-01 | `PENDING` | Visual inspection | [logs/A1/](file:///d:/diskb/KULIAH/EKSTENSI/smt3/genai/tubesgenai/neural-style-transfer/logs/A1/) |
-| **S07-01** | A4 | Finalisasi Laporan Proyek & Dokumentasi | Stage 6 | `PENDING` | Audit dokumen | [logs/A4/](file:///d:/diskb/KULIAH/EKSTENSI/smt3/genai/tubesgenai/neural-style-transfer/logs/A4/) |
+| **S05-01** | A4 | Audit Kepatuhan Kode & Standar PEP 8 | Stage 4 | `READY` | Linter / Review | [logs/A4/](../../logs/A4/) |
+| **S05-02** | A4 | Validasi & Konsolidasi Log Interaksi AI | S05-01 | `PENDING` | Audit format log | [logs/A4/](../../logs/A4/) |
+| **S05-03** | A4 | Integration Testing & Error Troubleshooting | S05-02 | `PENDING` | `pytest tests/` | [logs/A4/](../../logs/A4/) |
+| **S06-01** | A1 | Integrasi End-to-End Pipeline NST | Stage 5 | `PENDING` | `python main.py` | [logs/A1/](../../logs/A1/) |
+| **S06-02** | A1 | Evaluasi Output Gambar & Grafik Loss | S06-01 | `PENDING` | Visual inspection | [logs/A1/](../../logs/A1/) |
+| **S07-01** | A4 | Finalisasi Laporan Proyek & Dokumentasi | Stage 6 | `PENDING` | Audit dokumen | [logs/A4/](../../logs/A4/) |
 | **S07-02** | Semua| Final Acceptance & Persiapan Presentasi | S07-01 | `PENDING` | Demo rehearsal | Seluruh Tim |
 
 ---
