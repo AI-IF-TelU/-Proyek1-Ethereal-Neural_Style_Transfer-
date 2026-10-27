@@ -31,7 +31,7 @@
 * **Target Berkas:** `src/losses.py`, `tests/test_losses.py`, `logs/A3/S04-03-LOG.md`
 
 ### S04-04: Optimization Loop Piksel Gambar (Kebijakan D-008)
-* **Status:** `READY` 🟢
+* **Status:** `IN_PROGRESS` 🟡 (Implementasi teruji 9 unit test passed; menunggu review A1).
 * **Tujuan:** Menyusun modul `src/optimization.py` di mana parameter yang dioptimasi adalah piksel gambar hasil (`generated_tensor.requires_grad_(True)`), bukan bobot jaringan VGG-19.
 * **Kontrak & Spesifikasi Teknis (`D-008`):**
   1. **Fungsi Clamping Ruang Ternormalisasi ImageNet (`clamp_imagenet_tensor_`):**
@@ -63,7 +63,7 @@
 * **Target Berkas:** `src/optimization.py`, `logs/A3/S04-04-LOG.md`
 
 ### S04-05: Testing, Analisis Kompleksitas & Handoff Stage 4
-* **Status:** `READY` 🟢 (Dapat dikerjakan langsung bersama/setelah `S04-04`).
+* **Status:** `IN_PROGRESS` 🟡 (Analisis kompleksitas & 58 passed repo; menunggu review A1).
 * **Tujuan:**
   1. Menyusun unit test komprehensif pada `tests/test_optimization.py` (uji penurunan loss pada optimizer `adam` dan `lbfgs`, uji `init_mode` `"content"`/`"style"`/`"random"`, uji `clamp_imagenet_tensor_` menjaga rentang per-channel ImageNet, uji bobot VGG-19 tetap beku tidak berubah selama loop, dan uji validasi error input).
   2. Memperbarui bagian *Losses & Optimization* pada `docs/COMPLEXITY_ANALYSIS.md`.

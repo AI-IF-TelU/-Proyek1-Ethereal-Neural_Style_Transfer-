@@ -152,3 +152,30 @@ Dokumen ini mencatat riwayat resmi serah terima antar-tahap dan persetujuan hasi
 - **Acceptance:** **APPROVED (Disetujui)** oleh Samuel Aaron (A1).
 - **Langkah Berikutnya:** A3 (Hafiz Fajar Ramadhan) resmi diberikan izin mengeksekusi langkah terakhir Stage 4 yaitu **`S04-04` (*Optimization Loop Piksel*)** dan **`S04-05` (*Testing, Analisis Kompleksitas & Handoff Stage 4*)** pada `src/optimization.py` serta `tests/test_optimization.py` sesuai Keputusan Arsitektur **`D-008`**.
 - **Tanggal / Waktu:** 2026-10-27 15:50 WIB
+
+---
+
+### Handoff #7: S04-04 & S04-05 (Optimization Loop Piksel & Penutupan Stage 4)
+- **Task ID:** `S04-04` & `S04-05`
+- **Dari / Ke:** Hafiz Fajar Ramadhan (A3) ➔ Samuel Aaron (A1 - Ketua / Arsitek) & Muhammad Rafiq Abdurrasyid (A4 - QA)
+- **Git Commit Referensi:** `-` (Siap di-commit untuk review A1)
+- **File Berubah:**
+  - `src/optimization.py`
+  - `tests/test_optimization.py`
+  - `docs/COMPLEXITY_ANALYSIS.md`
+  - `docs/planning/A3_PLAN.md`
+  - `docs/planning/PROGRESS_TRACKER.md`
+  - `docs/HANDOFF.md`
+  - `logs/A3/S04-04-LOG.md`
+  - `logs/A3/S04-05-LOG.md`
+- **Kontrak / API (Sesuai Keputusan D-008):**
+  - `clamp_imagenet_tensor_(tensor: torch.Tensor) -> torch.Tensor` (In-place clamping per-channel pada rentang terstandarisasi ImageNet `[(0-mean)/std, (1-mean)/std]` di dalam `torch.no_grad()`).
+  - `run_style_transfer(...) -> tuple[torch.Tensor, list[float]]` (Prekomputasi target konten dan gaya sekali di awal; mendukung optimizer `'lbfgs'` dan `'adam'`, serta opsi inisialisasi `'content'`, `'style'`, dan `'random'`).
+- **Test Status:**
+  - `tests/test_optimization.py`: **9/9 passed** (`TestClampImageNetTensor`, `TestRunStyleTransfer`).
+  - Seluruh repositori (`pytest tests/ -v -rs`): **58 passed, 2 skipped (CUDA), 60 subtests passed in 19.11s**.
+- **Known Issues:** Tidak ada. Parameter model VGG-19 terbukti tetap beku (`requires_grad=False`), dan konvergensi penurunan nilai loss terverifikasi pada Adam dan L-BFGS.
+- **Acceptance:** **IN_PROGRESS (Menunggu Review A1)** — Pengajuan penutupan Stage 4.
+- **Langkah Berikutnya:** Setelah disetujui oleh A1, estafet pengerjaan resmi diserahkan kepada **Muhammad Rafiq Abdurrasyid (A4)** untuk memulai **Stage 5 (QA, Audit Kepatuhan PEP 8, Konsolidasi Log & Integration Testing)**.
+- **Tanggal / Waktu:** 2026-10-27 16:30 WIB
+

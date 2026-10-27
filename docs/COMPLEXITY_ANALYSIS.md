@@ -62,8 +62,62 @@ Analisis implementasi `src/feature_extractor.py` berdasarkan keputusan arsitektu
 
 ---
 
-## Ringkasan Tahap Selanjutnya (Kerangka Stage 4 — A3)
-- Gram Matrix: $\mathcal{O}(C_l^2 \cdot H_l W_l)$ per layer style
-- Content Loss: $\mathcal{O}(C_l \cdot H_l W_l)$
-- Style Loss: $\mathcal{O}(\sum_l (C_l^2 \cdot H_l W_l + C_l^2))$
-- Optimization ($T$ iterasi): $\mathcal{O}(T \cdot (T_{\text{forward}} + T_{\text{backward}}))$
+## Loss Functions & Pixel Optimization Loop (`src/losses.py` & `src/optimization.py` — Stage 4: S04-01 s.d. S04-05)
+
+Analisis matematis dan komputasional implementasi fungsi kerugian serta loop optimasi piksel gambar (Keputusan `D-007` & `D-008`). Misalkan gambar berukuran $(B, 3, H, W)$ dengan $B=1$, resolusi spasial layer $l$ adalah $M_l = H_l \times W_l$, dan jumlah kanal adalah $C_l$.
+
+### 1. Kompleksitas Waktu (*Time Complexity*)
+
+#### A. Gram Matrix (`gram_matrix`)
+- Operasi spasial `tensor.reshape(B, C, H * W)` berbiaya $\mathcal{O}(1)$ karena hanya memanipulasi metadata tensor (atau $\mathcal{O}(B \cdot C \cdot M)$ jika tensor non-contiguous membutuhkan realokasi memori).
+- Perkalian matriks batch `torch.bmm(F, F.transpose(1, 2))` mengalikan matriks $(B, C_l, M_l)$ dengan $(B, M_l, C_l)$:
+  $$T_{\text{gram}}(l) = \mathcal{O}\left(B \cdot C_l^2 \cdot M_l\right) = \mathcal{O}\left(B \cdot C_l^2 \cdot H_l \cdot W_l\right)$$
+- Normalisasi elemen pembagi skalar $C_l \cdot H_l \cdot W_l$ berbiaya $\mathcal{O}(B \cdot C_l^2)$.
+- Total waktu Gram Matrix per layer: $\mathcal{O}\left(B \cdot C_l^2 \cdot H_l \cdot W_l\right)$.
+
+#### B. Content Loss (`compute_content_loss`)
+- Menghitung MSE antara fitur tergenerasi dan fitur konten referensi pada layer konten (default `conv4_2` dengan $C_c = 512, M_c = (H/8) \times (W/8)$):
+  $$T_{\text{content}} = \mathcal{O}\left(B \cdot C_c \cdot H_c \cdot W_c\right) = \mathcal{O}\left(B \cdot H \cdot W\right)$$
+
+#### C. Style Loss (`compute_style_loss`)
+- Untuk setiap layer gaya $l \in \{\text{conv1\_1}, \text{conv2\_1}, \text{conv3\_1}, \text{conv4\_1}, \text{conv5\_1}\}$:
+  1. Kalkulasi Gram Matrix fitur tergenerasi: $\mathcal{O}(B \cdot C_l^2 \cdot M_l)$.
+  2. Perhitungan MSE terhadap target Gram berukuran $(B, C_l, C_l)$: $\mathcal{O}(B \cdot C_l^2)$.
+- Karena target gaya telah diprekomputasi di awal sekali (`precomputed`), waktu per iterasi adalah:
+  $$T_{\text{style}} = \mathcal{O}\left(B \sum_{l \in \mathcal{L}_{\text{style}}} C_l^2 M_l\right)$$
+
+#### D. Total Loss (`compute_total_loss`)
+- Kombinasi linear skalar $\alpha \cdot \mathcal{L}_{\text{content}} + \beta \cdot \mathcal{L}_{\text{style}}$ berbiaya $\mathcal{O}(1)$.
+
+#### E. Optimization Loop (`run_style_transfer` untuk $T$ iterasi)
+- **Prekomputasi Statis (Iterasi 0):**
+  Ekstraksi fitur konten target $\mathcal{O}(T_{\text{forward}})$ dan Gram Matrix gaya target $\mathcal{O}(T_{\text{forward}} + \sum C_l^2 M_l)$ dilakukan sekali saja di dalam `with torch.no_grad():`, menghemat $\approx 67\%$ waktu komputasi dibandingkan re-ekstraksi berulang di tiap iterasi.
+- **Biaya per Iterasi $t \in [1, T]$:**
+  1. Forward pass aktivasi VGG-19: $T_{\text{forward}} = \mathcal{O}(B \cdot H \cdot W)$.
+  2. Evaluasi Content Loss + Style Loss: $T_{\text{loss}} = \mathcal{O}(B \cdot H \cdot W + B \sum C_l^2 M_l)$.
+  3. Backward pass autograd ke piksel gambar: $T_{\text{backward}} \approx 2 \cdot T_{\text{forward}} = \mathcal{O}(B \cdot H \cdot W)$.
+  4. Step Optimizer:
+     - **Adam:** Pembaruan first & second moment piksel berbiaya $\mathcal{O}(B \cdot 3 \cdot H \cdot W)$.
+     - **L-BFGS:** Rekursi two-loop memori histori (riwayat $m$ pasangan gradien) berbiaya $\mathcal{O}(m \cdot B \cdot 3 \cdot H \cdot W)$.
+  5. In-place ImageNet Clamping (`clamp_imagenet_tensor_`): $\mathcal{O}(B \cdot 3 \cdot H \cdot W)$.
+- **Total Kompleksitas Waktu Optimasi:**
+  $$T_{\text{total}}(T) = \mathcal{O}\left(T_{\text{precompute}} + T \cdot \left(T_{\text{forward}} + T_{\text{loss}} + T_{\text{backward}} + T_{\text{opt}} + T_{\text{clamp}}\right)\right) = \mathcal{O}\left(T \cdot B \cdot H \cdot W\right)$$
+
+---
+
+### 2. Kompleksitas Ruang / Memori (*Space Complexity*)
+
+* **Memori Gram Matrix ($M_{\text{gram}}$):**
+  * Ukuran matriks Gram per layer berdimensi $(B, C_l, C_l)$.
+  * Untuk 5 layer gaya default ($C \in \{64, 128, 256, 512, 512\}$):
+    $$M_{\text{gram\_total}} = 4B \sum C_l^2 = 4B \cdot (64^2 + 128^2 + 256^2 + 512^2 + 512^2) = 4B \cdot 610304 \text{ float32} \approx 2.44B\text{ MB}$$
+  * Memori Gram target bersifat tetap dan tidak bergantung pada resolusi spasial $(H, W)$.
+* **Memori Gambar yang Dioptimasi ($M_{\text{opt}}$):**
+  * Tensor piksel `generated` berdimensi $(B, 3, H, W)$: $4 \times 3 \times H \times W$ byte.
+  * Buffer gradien `.grad` untuk piksel: $4 \times 3 \times H \times W$ byte.
+  * Buffer status optimizer:
+    - **Adam:** Dua buffer momen (m & v) $\approx 2 \times (4 \times 3 \times H \times W)$ byte.
+    - **L-BFGS:** $2m$ vektor histori gradien & posisi $\approx 2m \times (4 \times 3 \times H \times W)$ byte (default $m=100$).
+* **Peak Memory Autograd:**
+  * Alokasi aktivasi antara selama forward pass untuk backward gradien piksel adalah $\mathcal{O}(B \cdot H \cdot W)$, yang dibersihkan secara otomatis oleh PyTorch segera setelah `total_loss.backward()` selesai.
+
