@@ -9,6 +9,7 @@
 | D-005 | Kebijakan Tunggal Parameter `size=(H, W)` & Preprocessing Tensor S02-03 | Mencegah tertukarnya `(W, H)` Pillow vs `(H, W)` PyTorch serta menyamakan nama parameter `size` | Memakai `target_size` terpisah atau urutan `(W, H)` | A1 (Samuel) & A2 (Marthin) |
 | D-006 | Spesifikasi Kontrak & Arsitektur VGG-19 Feature Extractor (`S03-01` & `S03-02`) | Menjamin ekstraksi fitur `conv1_1`..`conv5_1` & `conv4_2` bebas mutasi `ReLU(inplace=True)`, hemat memori lewat pemotongan `features[:29]`, dan aman bagi aliran gradien ke `generated_img` | Menggunakan `vgg19.features` utuh 37 layer dengan `ReLU(inplace=True)` | A1 (Samuel Aaron - Lead/Arsitek) |
 | D-007 | Spesifikasi Kontrak Fungsi Loss NST (`S04-01` s.d. `S04-03` pada `src/losses.py`) | Menetapkan kontrak validasi, `.detach()` pada target fitur/Gram, serta bobot default `DEFAULT_STYLE_WEIGHTS` agar perhitungan loss konsisten dengan Stage 3 dan aman bagi *backward pass* di Stage 4 | Menghitung ulang fitur target dengan grafik autograd aktif | A1 (Samuel) & A3 (Hafiz) |
+| D-008 | Spesifikasi Kontrak Optimization Loop Piksel & Clamping Ruang ImageNet (`S04-04` & `S04-05` pada `src/optimization.py`) | Mencegah rusaknya rentang warna akibat clamping mentah `[0, 1]` pada ruang ternormalisasi ImageNet, menjamin prekomputasi fitur target sekali di awal, dan menyeragamkan API `run_style_transfer` | Clamping mentah `[0, 1]` atau menghitung ulang fitur target tiap iterasi | A1 (Samuel) & A3 (Hafiz) |
 
 ---
 
@@ -137,3 +138,50 @@
 - **Persetujuan:** Disetujui oleh Samuel Aaron (A1 - Ketua / Arsitek) untuk dieksekusi oleh Hafiz Fajar Ramadhan (A3).
 - **Dampak:** `docs/ARCHITECTURE.md`, `docs/planning/A3_PLAN.md`, `src/losses.py`, `tests/test_losses.py`.
 - **Pencatatan Sistem:** 2026-10-26T14:03:00+07:00 (WIB).
+
+---
+
+## D-008: Spesifikasi Kontrak Optimization Loop Piksel & Clamping Ruang ImageNet (`S04-04` & `S04-05` pada `src/optimization.py`)
+
+- **Konteks:**
+  1. Tensor gambar keluaran `preprocess_image` (Stage 2) telah dinormalisasi menggunakan mean $\mu = [0.485, 0.456, 0.406]$ dan standar deviasi $\sigma = [0.229, 0.224, 0.225]$ ImageNet. Di dalam ruang ternormalisasi ini, rentang piksel RGB $[0.0, 1.0]$ berkorespondensi dengan batas per-channel:
+     $$\text{min\_norm}_c = \frac{0.0 - \mu_c}{\sigma_c} \approx [-2.1179, -2.0357, -1.8044], \quad \text{max\_norm}_c = \frac{1.0 - \mu_c}{\sigma_c} \approx [2.2489, 2.4286, 2.6400]$$
+     Apabila di dalam loop optimasi dilakukan *clamping* mentah `tensor.clamp_(0.0, 1.0)`, maka seluruh piksel berwarna gelap ($< 0$ di ruang ImageNet) akan terpotong habis dan merusak distribusi warna gambar hasil.
+  2. Mengekstrak fitur `content_tensor` dan menghitung `gram_matrix` untuk `style_tensor` di dalam setiap iterasi optimasi akan memboroskan komputasi hampir $3\times$ lipat, karena kedua gambar referensi tersebut bersifat statis sepanjang proses optimasi.
+- **Keputusan Teknis (`D-008`):**
+  1. **Fungsi Clamping Ruang Ternormalisasi ImageNet (`clamp_imagenet_tensor_(tensor: torch.Tensor) -> torch.Tensor`):**
+     - Melakukan *clamping* per-channel di dalam blok `with torch.no_grad():` menggunakan batas `IMAGENET_MIN` dan `IMAGENET_MAX` yang diturunkan langsung dari `IMAGENET_MEAN` dan `IMAGENET_STD` milik `src.preprocessing`, sehingga tensor gambar hasil selalu tetap berada di dalam domain piksel RGB valid $[0.0, 1.0]$ tanpa memutus grafik *autograd*.
+  2. **Prekomputasi Fitur Konten & Gram Matrix Gaya Sekali di Awal:**
+     - Sebelum perulangan dimulai, di dalam `with torch.no_grad():`, fungsi wajib mengekstrak `target_content_feat = get_features(content_tensor, model, layers=required_layers)[content_layer].detach()` dan `target_style_grams = {l: gram_matrix(feat.detach()) for l, feat in get_features(style_tensor, model, layers=required_layers).items() if l in active_style_weights}` **cukup satu kali**.
+  3. **Kontrak `run_style_transfer` (`src/optimization.py`):**
+     ```python
+     def run_style_transfer(
+         content_tensor: torch.Tensor,
+         style_tensor: torch.Tensor,
+         model: torch.nn.Module,
+         num_steps: int = 300,
+         alpha: float = 1.0,
+         beta: float = 1e4,
+         optimizer_type: str = "lbfgs",
+         learning_rate: float = 1.0,
+         init_mode: str = "content",
+         style_weights: Mapping[str, float] | None = None,
+         content_layer: str = "conv4_2",
+         seed: int = 42,
+     ) -> tuple[torch.Tensor, list[float]]:
+     ```
+     - **Validasi Input:**
+       - `content_tensor` dan `style_tensor` wajib berupa `torch.Tensor` 4D `(B, 3, H, W)` (`H >= 16, W >= 16`) floating-point *finite* pada `device` yang sama dan `batch_size` yang sama (`TypeError`/`ValueError`).
+       - `model` wajib berupa `torch.nn.Module` pada `device` yang sama dengan `content_tensor`.
+       - `num_steps` wajib berupa integer murni (`not isinstance(num_steps, bool)`) dengan `num_steps >= 1`.
+       - `learning_rate` wajib berupa angka `int | float` (bukan `bool`), *finite*, dan `> 0`.
+       - `alpha, beta` wajib berupa angka `int | float` (bukan `bool`), *finite*, dan `>= 0`.
+       - `optimizer_type` (case-insensitive) wajib `"lbfgs"` atau `"adam"` (selain itu lempar `ValueError`).
+       - `init_mode` (case-insensitive) wajib `"content"`, `"style"`, atau `"random"` (selain itu lempar `ValueError`). Untuk `"style"`, ukuran spasial `style_tensor` harus sama dengan `content_tensor` (atau jika berbeda lempar `ValueError`). Untuk `"random"`, gunakan `torch.manual_seed(seed)`.
+     - **Perilaku Optimasi & Return:**
+       - Mengaktifkan `generated = init_tensor.detach().clone().requires_grad_(True)`.
+       - Pada setiap langkah (`1..num_steps`), menghitung `total_loss`, memanggil `optimizer.zero_grad()`, `total_loss.backward()`, mengeksekusi step optimizer (`L-BFGS` menggunakan `closure()` dengan `max_iter=1` per step agar `len(loss_history) == num_steps` konsisten dengan `Adam`), memanggil `clamp_imagenet_tensor_(generated)`, dan menyimpan nilai `float(total_loss.detach().item())` ke `loss_history`.
+       - Mengembalikan `(generated.detach(), loss_history)`.
+- **Persetujuan:** Disetujui oleh Samuel Aaron (A1 - Ketua / Arsitek) untuk dieksekusi oleh Hafiz Fajar Ramadhan (A3).
+- **Dampak:** `docs/ARCHITECTURE.md`, `docs/planning/A3_PLAN.md`, `src/optimization.py`, `tests/test_optimization.py`, `docs/COMPLEXITY_ANALYSIS.md`.
+- **Pencatatan Sistem:** 2026-10-27T15:50:00+07:00 (WIB).

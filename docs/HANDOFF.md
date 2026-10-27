@@ -125,3 +125,30 @@ Dokumen ini mencatat riwayat resmi serah terima antar-tahap dan persetujuan hasi
 - **Acceptance:** **APPROVED (Disetujui)** oleh Samuel Aaron (A1).
 - **Langkah Berikutnya:** A3 (Hafiz Fajar Ramadhan) resmi diberikan izin melanjutkan **`S04-02` (*Content Loss*)** dan **`S04-03` (*Style Loss & Total Loss*)** pada `src/losses.py` serta `tests/test_losses.py` sesuai Keputusan Arsitektur **`D-007`**.
 - **Tanggal / Waktu:** 2026-10-26 14:03 WIB
+
+---
+
+### Handoff #6: S04-02 & S04-03 (Formulasi Content Loss, Style Loss & Total Loss)
+- **Task ID:** `S04-02` & `S04-03`
+- **Dari / Ke:** Hafiz Fajar Ramadhan (A3) ➔ Samuel Aaron (A1 - Ketua / Arsitek)
+- **Git Commit Referensi:** `2ee07fbd7f3e1f92445e4145b4c3953ad980c060`
+- **File Berubah:**
+  - `src/losses.py`
+  - `tests/test_losses.py`
+  - `docs/planning/A3_PLAN.md`
+  - `docs/planning/PROGRESS_TRACKER.md`
+  - `logs/A3/S04-02-LOG.md`
+  - `logs/A3/S04-03-LOG.md`
+- **Kontrak / API (Sesuai Keputusan D-007):**
+  - `DEFAULT_STYLE_WEIGHTS: dict[str, float]` = `{"conv1_1": 0.2, "conv2_1": 0.2, "conv3_1": 0.2, "conv4_1": 0.2, "conv5_1": 0.2}`
+  - `gram_matrix(tensor: torch.Tensor) -> torch.Tensor` (Diperbarui dengan `.reshape(...)` untuk mendukung tensor *non-contiguous*).
+  - `compute_content_loss(gen_features: torch.Tensor, content_features: torch.Tensor) -> torch.Tensor` (MSE dengan `content_features.detach()`).
+  - `compute_style_loss(gen_features_dict: Mapping[str, torch.Tensor], style_gram_dict: Mapping[str, torch.Tensor], layer_weights: Mapping[str, float] | None = None) -> torch.Tensor` (Mendukung target Gram Matrix 3D maupun fitur 4D dengan `.detach()`).
+  - `compute_total_loss(content_loss: torch.Tensor, style_loss: torch.Tensor, alpha: float = 1.0, beta: float = 1e4) -> torch.Tensor`.
+- **Test Status:**
+  - `tests/test_losses.py`: **20/20 passed** (`TestGramMatrix`, `TestContentLoss`, `TestStyleLoss`, `TestTotalLoss`).
+  - Seluruh repositori (`pytest tests/ -v -rs`): **49 passed, 2 skipped (CUDA), 60 subtests passed** (18.19s).
+- **Known Issues:** Tidak ada; modul `src/losses.py` telah lengkap 100%.
+- **Acceptance:** **APPROVED (Disetujui)** oleh Samuel Aaron (A1).
+- **Langkah Berikutnya:** A3 (Hafiz Fajar Ramadhan) resmi diberikan izin mengeksekusi langkah terakhir Stage 4 yaitu **`S04-04` (*Optimization Loop Piksel*)** dan **`S04-05` (*Testing, Analisis Kompleksitas & Handoff Stage 4*)** pada `src/optimization.py` serta `tests/test_optimization.py` sesuai Keputusan Arsitektur **`D-008`**.
+- **Tanggal / Waktu:** 2026-10-27 15:50 WIB

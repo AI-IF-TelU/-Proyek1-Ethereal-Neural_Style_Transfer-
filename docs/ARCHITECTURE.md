@@ -93,8 +93,15 @@ graph TD
   * *Deskripsi:* Memvalidasi `content_loss` dan `style_loss` sebagai tensor skalar floating-point *finite* serta $\alpha, \beta \ge 0$ (bukan `bool`), lalu menghitung $L_{total} = \alpha \cdot L_{content} + \beta \cdot L_{style}$.
 
 ### D. Modul Optimasi (`src/optimization.py`) — PIC: A3
-* **`run_style_transfer(...) -> tuple[torch.Tensor, list[float]]`**
-  * *Deskripsi:* Perulangan optimasi piksel gambar target menggunakan L-BFGS/Adam, clamping tiap iterasi, dan mencatat riwayat penurunan loss.
+
+> **Kebijakan Loop Optimasi Piksel & Clamping ImageNet (Keputusan D-008):**
+> 1. Clamping setiap iterasi wajib menggunakan batas per-channel ruang ternormalisasi ImageNet $\left[\frac{0 - \mu_c}{\sigma_c}, \frac{1 - \mu_c}{\sigma_c}\right]$ di dalam `with torch.no_grad():` (`clamp_imagenet_tensor_`), bukan clamping mentah `[0.0, 1.0]`.
+> 2. Fitur konten target dan Gram Matrix gaya target wajib dihitung satu kali di awal sebelum loop optimasi dimulai.
+
+* **`clamp_imagenet_tensor_(tensor: torch.Tensor) -> torch.Tensor`**
+  * *Deskripsi:* Melakukan *clamping* *in-place* (di dalam `torch.no_grad()`) pada tensor 4D `(B, 3, H, W)` ke rentang valid ruang ternormalisasi ImageNet agar ekuivalen dengan rentang piksel RGB $[0.0, 1.0]$.
+* **`run_style_transfer(content_tensor: torch.Tensor, style_tensor: torch.Tensor, model: torch.nn.Module, num_steps: int = 300, alpha: float = 1.0, beta: float = 1e4, optimizer_type: str = "lbfgs", learning_rate: float = 1.0, init_mode: str = "content", style_weights: Mapping[str, float] | None = None, content_layer: str = "conv4_2", seed: int = 42) -> tuple[torch.Tensor, list[float]]`**
+  * *Deskripsi:* Menjalankan loop optimasi piksel gambar target menggunakan optimizer `"lbfgs"` (dengan `closure()`) atau `"adam"`, mendukung inisialisasi `"content"`, `"style"`, atau `"random"`, menerapkan `clamp_imagenet_tensor_` tiap langkah, dan mengembalikan `(generated_tensor.detach(), loss_history)`.
 
 ### E. Modul Visualisasi (`src/visualization.py`) — PIC: A1 / A4
 * **`save_image(tensor: torch.Tensor, output_path: str | Path) -> None`**

@@ -52,9 +52,9 @@ Dokumen ini adalah **pusat kendali dan status resmi (*Single Source of Truth*)**
 | **S03-01** | A1 | Load VGG-19 Pretrained & Freezing Bobot | Stage 2 | `COMPLETED` | VGG-19[:29] frozen, ReLU inplace=False | [S03-01](../../logs/A1/S03-01-LOG.md) |
 | **S03-02** | A1 | Ekstraksi Layer Content & Style | S03-01 | `COMPLETED` | `pytest`: 8 passed, 1 skipped (CUDA), 17 subtests passed | [S03-02](../../logs/A1/S03-02-LOG.md) |
 | **S04-01** | A3 | Implementasi Matematis Gram Matrix | Stage 3 | `COMPLETED` | Pytest: 7 passed; disetujui A1 | [S04-01](../../logs/A3/S04-01-LOG.md) / [Review A1](../../logs/A1/S04-01-REVIEW-LOG.md) |
-| **S04-02** | A3 | Formulasi Content Loss (MSE Fitur) | S04-01 | `IN_PROGRESS` | Pytest: 20 passed (TestContentLoss); menunggu review A1 | [S04-02](../../logs/A3/S04-02-LOG.md) |
-| **S04-03** | A3 | Formulasi Style Loss (Multi-layer Gram) | S04-02 | `IN_PROGRESS` | Pytest: 20 passed (TestStyleLoss & TestTotalLoss); menunggu review A1 | [S04-03](../../logs/A3/S04-03-LOG.md) |
-| **S04-04** | A3 | Optimization Loop Piksel (L-BFGS/Adam) | S04-03 | `PENDING` | Tensor gradien check | [logs/A3/](file:///d:/diskb/KULIAH/EKSTENSI/smt3/genai/tubesgenai/neural-style-transfer/logs/A3/) |
+| **S04-02** | A3 | Formulasi Content Loss (MSE Fitur) | S04-01 | `COMPLETED` | Pytest: 20 passed (TestContentLoss); disetujui A1 | [S04-02](../../logs/A3/S04-02-LOG.md) / [Review A1](../../logs/A1/S04-02-03-REVIEW-LOG.md) |
+| **S04-03** | A3 | Formulasi Style Loss (Multi-layer Gram) | S04-02 | `COMPLETED` | Pytest: 20 passed (TestStyleLoss & TestTotalLoss); disetujui A1 | [S04-03](../../logs/A3/S04-03-LOG.md) / [Review A1](../../logs/A1/S04-02-03-REVIEW-LOG.md) |
+| **S04-04** | A3 | Optimization Loop Piksel (L-BFGS/Adam) | S04-03 | `READY` | Tensor gradien check | [logs/A3/](file:///d:/diskb/KULIAH/EKSTENSI/smt3/genai/tubesgenai/neural-style-transfer/logs/A3/) |
 | **S04-05** | A3 | Testing & Tuning Hyperparameter Loss | S04-04 | `PENDING` | `test_optimization.py` | [logs/A3/](file:///d:/diskb/KULIAH/EKSTENSI/smt3/genai/tubesgenai/neural-style-transfer/logs/A3/) |
 | **S05-01** | A4 | Audit Kepatuhan Kode & Standar PEP 8 | Stage 4 | `PENDING` | Linter / Review | [logs/A4/](file:///d:/diskb/KULIAH/EKSTENSI/smt3/genai/tubesgenai/neural-style-transfer/logs/A4/) |
 | **S05-02** | A4 | Validasi & Konsolidasi Log Interaksi AI | S05-01 | `PENDING` | Audit format log | [logs/A4/](file:///d:/diskb/KULIAH/EKSTENSI/smt3/genai/tubesgenai/neural-style-transfer/logs/A4/) |
