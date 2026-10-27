@@ -21,7 +21,7 @@
 * **Status:** `COMPLETED` ✅ (7 unit test lulus; disetujui oleh A1 pada Handoff #5).
 
 ### S04-02: Formulasi Content Loss (Kebijakan D-007)
-* **Status:** `READY` 🟢
+* **Status:** `IN_PROGRESS` 🟡 (Teruji 20/20 test losses lulus; menunggu review A1).
 * **Tujuan:** Membuat fungsi `compute_content_loss(gen_features: torch.Tensor, content_features: torch.Tensor) -> torch.Tensor`.
 * **Kontrak & Formula (`D-007`):**
   1. Memvalidasi `gen_features` dan `content_features` sebagai `torch.Tensor` 4D `(B, C, H, W)` bertipe floating-point yang *finite*, memiliki `shape` dan `device` yang identik (lempar `TypeError` jika bukan tensor, `ValueError` jika shape/dtype/device/finite tidak valid).
@@ -32,6 +32,7 @@
 * **Target Berkas:** `src/losses.py`, `tests/test_losses.py`, `logs/A3/S04-02-LOG.md`
 
 ### S04-03: Formulasi Style Loss & Total Loss (Kebijakan D-007)
+* **Status:** `IN_PROGRESS` 🟡 (Teruji 20/20 test losses lulus; menunggu review A1).
 * **Tujuan:** Membuat fungsi `compute_style_loss` dan `compute_total_loss` pada `src/losses.py`.
 * **Kontrak & Formula (`D-007`):**
   1. **Konstanta Bobot Layer Default:**
