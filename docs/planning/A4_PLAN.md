@@ -26,7 +26,7 @@
 
 ---
 
-### Stage 7: Finalisasi Proyek & Acceptance (AKTIF — Stage 6 Selesai, Giliran Terakhir A4!)
+### Stage 7: Finalisasi Proyek & Acceptance (AKTIF — `S07-01` & `S07-02` Menunggu Review A1)
 
 > **Panduan Eksekusi Stage 7 (`S07-01` & `S07-02`) untuk A4 (Muhammad Rafiq Abdurrasyid):**
 > Ketua Tim (**A1 — Samuel Aaron**) telah menyelesaikan **Stage 6 (`S06-01` & `S06-02`)** dan menyerahkan seluruh artefak visual hasil *Neural Style Transfer* di dalam repositori (lihat **Handoff #10** pada `docs/HANDOFF.md`):
@@ -39,7 +39,7 @@
 > * Suite Pengujian Penuh: **`90 passed, 2 skipped (CUDA), 60 subtests passed`** (`0 E501` pada berkas Stage 6).
 
 #### S07-01: Finalisasi Laporan Proyek & Dokumentasi Akhir
-* **Status:** `READY` 🟢
+* **Status:** `IN_PROGRESS` (menunggu review A1) — [docs/FINAL_REPORT.md](../FINAL_REPORT.md), README diperbarui, [docs/LOG_INTERAKSI.md](../LOG_INTERAKSI.md) mencakup 30 log; log: [logs/A4/S07-01-LOG.md](../../logs/A4/S07-01-LOG.md).
 * **Tujuan:**
   1. Menyusun dokumen laporan akhir komprehensif **`docs/FINAL_REPORT.md`** yang merangkum:
      * Latar Belakang, Rumusan Masalah, dan Dasar Teori Matematis NST (Gatys et al.: *Content Loss*, *Gram Matrix*, *Style Loss*, *Total Loss*).
@@ -52,7 +52,7 @@
 * **Target Berkas:** `docs/FINAL_REPORT.md`, `README.md`, `docs/LOG_INTERAKSI.md`, `logs/A4/S07-01-LOG.md`, `logs/interactions.jsonl`
 
 #### S07-02: Final Acceptance & Persiapan Presentasi / Demo Checklist
-* **Status:** `READY` 🟢 (Kerjakan langsung bersama/setelah `S07-01`!)
+* **Status:** `IN_PROGRESS` (menunggu review A1) — [docs/DEMO_CHECKLIST.md](../DEMO_CHECKLIST.md) dengan 3 perintah demo terverifikasi, Handoff #11 ditambahkan; log: [logs/A4/S07-02-LOG.md](../../logs/A4/S07-02-LOG.md).
 * **Tujuan:**
   1. Menyusun **`docs/DEMO_CHECKLIST.md`** berisi daftar periksa kesiapan presentasi kelompok, urutan pembagian bicara per anggota (`A1`–`A4`), perintah demo *live* (`python main.py` & `pytest`), serta daftar tanya-jawab teknis (*FAQ*) untuk ujian/responsi.
   2. Mencatat log pengerjaan pada **`logs/A4/S07-02-LOG.md`**, memperbarui status `S07-01`, `S07-02`, dan **Stage 7** di `docs/planning/PROGRESS_TRACKER.md` serta `docs/planning/A4_PLAN.md` menjadi `COMPLETED`, dan menambahkan **Handoff #11 (Final Project Acceptance — Penutupan Stage 7)** pada `docs/HANDOFF.md`.

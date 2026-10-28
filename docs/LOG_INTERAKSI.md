@@ -2,7 +2,8 @@
 
 Dokumen ini adalah indeks resmi seluruh log interaksi AI (*Vibe Coding logs*)
 Proyek 1 - Ethereal Neural Style Transfer. Disusun oleh A4 (Muhammad Rafiq
-Abdurrasyid) pada langkah **S05-02** (28/10/2026).
+Abdurrasyid) pada langkah **S05-02** (28/10/2026) dan diperbarui pada
+**S07-01** (28/10/2026) untuk mencakup log Stage 6 dan Stage 7.
 
 - Standar format: [logs/LOG_TEMPLATE.md](../logs/LOG_TEMPLATE.md)
 - Arsip mesin (JSONL): [logs/interactions.jsonl](../logs/interactions.jsonl),
@@ -26,13 +27,14 @@ python scripts/log_interaction.py --member-id A4 --task-id S05-02 \
 
 | Anggota | Peran | Jumlah Log | Model AI (sesuai metadata log) |
 |---|---|---|---|
-| A1 — Samuel Aaron | Ketua, Prompt Engineer & Software Architect | 13 | Gemini / Claude Assistant, Gemini / Antigravity Agent |
+| A1 — Samuel Aaron | Ketua, Prompt Engineer & Software Architect | 16 | Gemini / Claude Assistant, Gemini / Antigravity Agent |
 | A2 — Marthin M. Tambunan | Data Pipeline & Preprocessing Engineer | 3 | openai/gpt-6-astra (Kilo Code) |
 | A3 — Hafiz Fajar Ramadhan | Loss Function & Optimization Engineer | 5 | Gemini Assistant |
-| A4 — Muhammad Rafiq Abdurrasyid | QA, Dokumentasi & Error Handler | 4 | Claude Opus 5.5 (`claude-opus-5-5`) |
-| **Total** | | **25** | |
+| A4 — Muhammad Rafiq Abdurrasyid | QA, Dokumentasi & Error Handler | 6 | Claude Opus 5.5 (`claude-opus-5-5`) |
+| **Total** | | **30** | |
 
-Jumlah A4 sudah termasuk log S05-02 dan S05-03 yang dibuat bersama dokumen ini.
+Pembaruan S07-01: +3 log A1 (review penutupan Stage 5, S06-01, S06-02) dan
++2 log A4 (S07-01, S07-02) yang dibuat pada langkah ini.
 
 ---
 
@@ -57,6 +59,9 @@ Kolom *Commit* adalah commit pertama yang menambahkan file log tersebut.
 | 11 | S04-02 & S04-03 (review) | Audit Loss & Kontrak Optimization Loop (D-008) | [S04-02-03-REVIEW-LOG.md](../logs/A1/S04-02-03-REVIEW-LOG.md) | 2026-10-27 | `b5876a4` |
 | 12 | S04-04 & S04-05 (review) | Audit Penutupan Stage 4 & Serah Terima ke Stage 5 | [S04-04-05-REVIEW-LOG.md](../logs/A1/S04-04-05-REVIEW-LOG.md) | 2026-10-27 | `fe481fc` |
 | 13 | S00-03 & S05-01 (review) | Persetujuan S00-03 dan Audit PEP 8 S05-01 | [S05-01-REVIEW-LOG.md](../logs/A1/S05-01-REVIEW-LOG.md) | 2026-10-28 | `f4c2bb1` |
+| 14 | S05-02 & S05-03 (review) | Audit & Penutupan Resmi Stage 5 | [S05-02-03-REVIEW-LOG.md](../logs/A1/S05-02-03-REVIEW-LOG.md) | 2026-10-28 | `77fd36c` |
+| 15 | S06-01 | Integrasi End-to-End Pipeline (`main.py`, `src/visualization.py`, `config/config.yaml`, D-009) | [S06-01-LOG.md](../logs/A1/S06-01-LOG.md) | 2026-10-28 | `77fd36c` |
+| 16 | S06-02 | Evaluasi Output, Tuning L-BFGS & Grafik Loss | [S06-02-LOG.md](../logs/A1/S06-02-LOG.md) | 2026-10-28 | `77fd36c` |
 
 ### A2 — Marthin M. Tambunan
 
@@ -82,8 +87,10 @@ Kolom *Commit* adalah commit pertama yang menambahkan file log tersebut.
 |---|---|---|---|---|---|
 | 1 | S00-03 | Kebijakan Logging AI (verifikasi & log susulan) | [S00-03-LOG.md](../logs/A4/S00-03-LOG.md) | 2026-10-26 s.d. 27 | `349c627` |
 | 2 | S05-01 | Audit Kepatuhan Kode & Standar PEP 8 | [S05-01-LOG.md](../logs/A4/S05-01-LOG.md) | 2026-10-27 s.d. 28 | `349c627` |
-| 3 | S05-02 | Validasi & Konsolidasi Log Interaksi AI | [S05-02-LOG.md](../logs/A4/S05-02-LOG.md) | 2026-10-28 | commit S05-02 |
-| 4 | S05-03 | Integration Testing & Error Troubleshooting | [S05-03-LOG.md](../logs/A4/S05-03-LOG.md) | 2026-10-28 | commit S05-03 |
+| 3 | S05-02 | Validasi & Konsolidasi Log Interaksi AI | [S05-02-LOG.md](../logs/A4/S05-02-LOG.md) | 2026-10-28 | `a2b207d` |
+| 4 | S05-03 | Integration Testing & Error Troubleshooting | [S05-03-LOG.md](../logs/A4/S05-03-LOG.md) | 2026-10-28 | `a2b207d` |
+| 5 | S07-01 | Finalisasi Laporan Proyek & Dokumentasi Akhir | [S07-01-LOG.md](../logs/A4/S07-01-LOG.md) | 2026-10-28 | dibuat pada langkah ini |
+| 6 | S07-02 | Final Acceptance & Persiapan Presentasi | [S07-02-LOG.md](../logs/A4/S07-02-LOG.md) | 2026-10-28 | dibuat pada langkah ini |
 
 ---
 
@@ -115,6 +122,9 @@ lalu dicek ulang manual. Kriteria:
 | A1/S04-02-03-REVIEW | 10/10 | 4/4 (judul bebas) | 0/4 | 0/7 | Format review |
 | A1/S04-04-05-REVIEW | 10/10 | 4/4 (judul bebas) | 0/4 | 0/7 | Format review |
 | A1/S05-01-REVIEW | 10/10 | 4/4 | 4/4 | 7/7 | **Lengkap** |
+| A1/S05-02-03-REVIEW | 10/10 | 4/4 | 4/4 | 7/7 | **Lengkap** |
+| A1/S06-01 | 10/10 | 4/4 | 4/4 | 7/7 | **Lengkap** |
+| A1/S06-02 | 10/10 | 4/4 | 4/4 | 7/7 | **Lengkap** |
 | A2/S02-02 | 1/10 (format sendiri) | 0/4 (judul bebas) | isi ada, tanpa sub-judul | 0/7 (daftar bebas) | Format bebas |
 | A2/S02-03 | 1/10 (format sendiri) | 4/4 (+ bagian 4) | isi ada, tanpa sub-judul | 0/7 (tabel hasil) | Sebagian |
 | A2/S02-04 | 1/10 (format sendiri) | 4/4 | isi ada, tanpa sub-judul | 0/7 (checklist) | Sebagian |
@@ -127,9 +137,12 @@ lalu dicek ulang manual. Kriteria:
 | A4/S05-01 | 10/10 | 4/4 | 4/4 | 7/7 | **Lengkap** |
 | A4/S05-02 | 10/10 | 4/4 | 4/4 | 7/7 | **Lengkap** |
 | A4/S05-03 | 10/10 | 4/4 | 4/4 | 7/7 | **Lengkap** |
+| A4/S07-01 | 10/10 | 4/4 | 4/4 | 7/7 | **Lengkap** |
+| A4/S07-02 | 10/10 | 4/4 | 4/4 | 7/7 | **Lengkap** |
 
-**Ringkasan:** 10 dari 25 log lengkap sesuai template (A1 1, A3 5, A4 4 — termasuk
-S05-02/S05-03; A3 S04-02/S04-05 dihitung lengkap karena pelajaran tetap ada).
+**Ringkasan:** 15 dari 30 log lengkap sesuai template (A1 4, A3 5, A4 6;
+A3 S04-02/S04-05 dihitung lengkap karena pelajaran tetap ada). Seluruh log
+baru sejak penutupan Stage 5 (A1 dan A4) sudah mengikuti template penuh.
 Semua log tetap memuat isi inti (prompt, alasan, hasil, dan status), tetapi
 log review/spesifikasi A1 dan log A2 memakai struktur sendiri.
 
@@ -170,7 +183,11 @@ A4 tidak mengubah log milik anggota lain. Temuan berikut diserahkan ke pemilik:
 | 4 | S04-04 (A3) | `PytestRemovedIn10Warning` | Fixture ber-scope class sebagai metode instance | Fixture `vgg_model` dipindah ke `scope="module"` | [A3/S04-04](../logs/A3/S04-04-LOG.md) |
 | 4 | S04-05 (A3) | Tidak ada error (58 passed) | — | — | [A3/S04-05](../logs/A3/S04-05-LOG.md) |
 | 5 | S05-01 (A4) | `SyntaxError` (E901) di `main.py` & `src/visualization.py`; `AttributeError` untuk `optimizer_type`/`init_mode` non-string | Placeholder `\"\"\"`; tidak ada cek tipe sebelum `.lower()` | Dilaporkan; diperbaiki di S05-03 atas izin A1 | [A4/S05-01](../logs/A4/S05-01-LOG.md) |
-| 5 | S05-03 (A4) | `RuntimeError: view size is not compatible ...` di `torch/optim/lbfgs.py` (Temuan #11) | Output `preprocess_image` tidak kontigu; `clone()` mempertahankan stride; LBFGS memakai `grad.view(-1)` | `clone(memory_format=torch.contiguous_format)` di `run_style_transfer`; menunggu konfirmasi A1 | [A4/S05-03](../logs/A4/S05-03-LOG.md) |
+| 5 | S05-03 (A4) | `RuntimeError: view size is not compatible ...` di `torch/optim/lbfgs.py` (Temuan #11) | Output `preprocess_image` tidak kontigu; `clone()` mempertahankan stride; LBFGS memakai `grad.view(-1)` | `clone(memory_format=torch.contiguous_format)` di `run_style_transfer`; disahkan A1 sebagai D-009 | [A4/S05-03](../logs/A4/S05-03-LOG.md) |
+
+| 6 | S06-01 (A1) | `AssertionError: assert 0.0 < 0.0` di `test_main_cli_end_to_end_offline`; `URLError ... getaddrinfo failed` saat unduh bobot VGG-19 | Gambar uji konten = gaya (seed sama); sandbox tanpa internet | Gambar uji dibedakan; `_load_vgg19_with_fallback` + kalibrasi `fan_in` di `main.py` | [A1/S06-01](../logs/A1/S06-01-LOG.md) |
+| 6 | S06-02 (A1) | *Overshoot spike* loss Step 5 (7.35 → 10.90) dengan L-BFGS `lr=1.0` | Langkah kuasi-Newton awal terlalu agresif (`max_iter=1`, tanpa *line search*) | `learning_rate` diturunkan ke `0.5`; kurva turun mulus −61.34% | [A1/S06-02](../logs/A1/S06-02-LOG.md) |
+| 7 | S07-01/S07-02 (A4) | Perintah demo memakai opsi `--num-steps`/`--output` yang tidak ada (`unrecognized arguments`); artefak S06-02 ternyata dari VGG-19 offline | Nama opsi CLI asli `--steps`/`--output-image`; loss awal 9.8481 identik dengan run `--no-pretrained` | Perintah demo dikoreksi; keterbatasan bobot dicatat di laporan akhir | [A4/S07-01](../logs/A4/S07-01-LOG.md), [A4/S07-02](../logs/A4/S07-02-LOG.md) |
 
 Pola berulang: placeholder dengan `\"\"\"` muncul tiga kali (S02-02 di file A2,
 S04-01 di `tests/test_optimization.py`, S05-01 di `main.py` dan
@@ -178,7 +195,7 @@ S04-01 di `tests/test_optimization.py`, S05-01 di `main.py` dan
 
 ---
 
-## 5. Rekap Keputusan Arsitektur D-001 s.d. D-008
+## 5. Rekap Keputusan Arsitektur D-001 s.d. D-009
 
 Sumber lengkap: [docs/DECISIONS.md](DECISIONS.md).
 
@@ -192,6 +209,7 @@ Sumber lengkap: [docs/DECISIONS.md](DECISIONS.md).
 | D-006 | Kontrak VGG-19: `features[:29]`, `ReLU(inplace=False)`, parameter beku | S03-01, S03-02 | A1 | [A1/S03-01-ARCH-SPEC](../logs/A1/S03-01-ARCH-SPEC-LOG.md) |
 | D-007 | Kontrak loss: validasi, `.detach()` pada target, `DEFAULT_STYLE_WEIGHTS` | S04-01 s.d. S04-03 | A1 & A3 | [A1/S04-01-REVIEW](../logs/A1/S04-01-REVIEW-LOG.md) |
 | D-008 | Loop optimasi piksel: clamping ruang ImageNet, prekomputasi target, API `run_style_transfer` | S04-04, S04-05 | A1 & A3 | [A1/S04-02-03-REVIEW](../logs/A1/S04-02-03-REVIEW-LOG.md) |
+| D-009 | Integrasi `main.py` + `config/config.yaml`, modul visualisasi, inisialisasi kontigu L-BFGS (Temuan #11) | S05-03, S06-01, S06-02 | A1 & A4 | [A1/S06-01](../logs/A1/S06-01-LOG.md), [A4/S05-03](../logs/A4/S05-03-LOG.md) |
 
 Perbaikan S05-03 (cek `isinstance(..., str)` untuk `optimizer_type` dan
 `init_mode`) tidak mengubah signature maupun perilaku D-008 untuk input valid.
@@ -206,6 +224,9 @@ Perbaikan S05-03 (cek `isinstance(..., str)` untuk `optimizer_type` dan
 | Entri ringkasan S05-02 | +20 | Satu entri per log A1 (12, kecuali review S05-01 yang sudah ada), A2 (3), dan A3 (5) |
 | Entri A4 S05-02 & S05-03 | +2 | Dicatat setelah masing-masing langkah selesai |
 | **Total setelah Stage 5** | **26** | Mencakup jejak A1–A4 |
+| Entri A1 Stage 5–6 | +3 | Review penutupan Stage 5, S06-01, S06-02 (ditulis A1) |
+| Entri A4 S07-01 & S07-02 | +2 | Dicatat setelah masing-masing langkah selesai |
+| **Total setelah Stage 7** | **31** | |
 
 Entri ringkasan ditulis A4 pada 28/10/2026 lewat `scripts/log_interaction.py`,
 jadi `timestamp` adalah waktu konsolidasi, bukan waktu sesi asli. Tanggal sesi

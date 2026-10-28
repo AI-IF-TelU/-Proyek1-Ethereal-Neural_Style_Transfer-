@@ -61,8 +61,8 @@ Dokumen ini adalah **pusat kendali dan status resmi (*Single Source of Truth*)**
 | **S05-03** | A4 | Integration Testing & Error Troubleshooting | S05-02 | `COMPLETED` | `pytest`: 82 passed, 2 skipped (CUDA), 60 subtests; disetujui A1 | [S05-03](../../logs/A4/S05-03-LOG.md) / [Review A1](../../logs/A1/S05-02-03-REVIEW-LOG.md) |
 | **S06-01** | A1 | Integrasi End-to-End Pipeline NST | Stage 5 | `COMPLETED` | `pytest`: 90 passed, 2 skipped (CUDA); `0 E501` pada berkas Stage 6 | [S06-01](../../logs/A1/S06-01-LOG.md) |
 | **S06-02** | A1 | Evaluasi Output Gambar & Grafik Loss | S06-01 | `COMPLETED` | `python main.py`: L-BFGS 50 steps (`loss 9.8481 -> 3.8076`, `-61.34%`) | [S06-02](../../logs/A1/S06-02-LOG.md) |
-| **S07-01** | A4 | Finalisasi Laporan Proyek & Dokumentasi | Stage 6 | `READY` | Audit dokumen & laporan akhir | [logs/A4/](../../logs/A4/) |
-| **S07-02** | Semua| Final Acceptance & Persiapan Presentasi | S07-01 | `READY` | Demo rehearsal & checklist | Seluruh Tim |
+| **S07-01** | A4 | Finalisasi Laporan Proyek & Dokumentasi | Stage 6 | `IN_PROGRESS` (menunggu review A1) | `FINAL_REPORT.md`, README, LOG_INTERAKSI (30 log); pytest 90 passed | [S07-01](../../logs/A4/S07-01-LOG.md) |
+| **S07-02** | Semua| Final Acceptance & Persiapan Presentasi | S07-01 | `IN_PROGRESS` (menunggu review A1) | `DEMO_CHECKLIST.md`; 3 perintah demo terverifikasi | [S07-02](../../logs/A4/S07-02-LOG.md) |
 
 ---
 

@@ -260,3 +260,32 @@ Dokumen ini mencatat riwayat resmi serah terima antar-tahap dan persetujuan hasi
 - **Acceptance:** **APPROVED (Disetujui)** oleh Samuel Aaron (A1) — **Stage 6 Resmi Ditutup (`COMPLETED`)**.
 - **Langkah Berikutnya:** Tongkat estafet resmi diserahkan kepada **Muhammad Rafiq Abdurrasyid (A4)** dan seluruh tim untuk mengeksekusi **Stage 7 (`S07-01`: Finalisasi Laporan Proyek `docs/FINAL_REPORT.md` & `README.md`, serta `S07-02`: Demo Checklist `docs/DEMO_CHECKLIST.md`)** sesuai panduan pada `docs/planning/A4_PLAN.md`.
 - **Tanggal / Waktu:** 2026-10-28 17:30 WIB
+
+---
+
+### Handoff #11: S07-01 & S07-02 (Final Project Acceptance — Penutupan Stage 7)
+- **Task ID:** `S07-01` & `S07-02`
+- **Dari / Ke:** Muhammad Rafiq Abdurrasyid (A4 - QA, Dokumentasi & Error Handler) ➔ Samuel Aaron (A1 - Ketua / Arsitek) & Seluruh Tim
+- **Git Commit Referensi:** commit "docs(stage7): finalisasi FINAL_REPORT, README, DEMO_CHECKLIST, dan log S07-01 & S07-02"
+- **File Berubah / Ditambahkan:**
+  - `docs/FINAL_REPORT.md` (baru), `docs/DEMO_CHECKLIST.md` (baru)
+  - `README.md`, `docs/LOG_INTERAKSI.md`
+  - `logs/A4/S07-01-LOG.md` (baru), `logs/A4/S07-02-LOG.md` (baru), `logs/interactions.jsonl`
+  - `docs/planning/PROGRESS_TRACKER.md`, `docs/planning/A4_PLAN.md`, `docs/HANDOFF.md`
+- **Hasil:**
+  - **`docs/FINAL_REPORT.md`:** 7 bagian — ringkasan eksekutif, teori NST (LaTeX + bentuk implementasi `F.mse_loss`), arsitektur 6 modul + diagram + D-001..D-009, hasil eksperimen (3 gambar, tabel tuning L-BFGS `lr` 1.0 vs 0.5) dan verifikasi ulang A4, kompleksitas per modul, rekap QA (status akhir Temuan #1–#11, pytest per berkas), dan kontribusi A1–A4.
+  - **`README.md`:** bagian *Hasil NST* (panel 3-kolom & kurva loss), *Status Pengujian* per berkas (90 passed), *Cara Menjalankan* dengan 16 opsi CLI asli `main.py`, tautan ke `FINAL_REPORT.md`, `DEMO_CHECKLIST.md`, dan `HANDOFF.md`.
+  - **`docs/DEMO_CHECKLIST.md`:** checklist pra-demo, alur presentasi A1–A4 (±25 menit), 3 perintah demo beserta output aktual, rencana cadangan, FAQ 15 pertanyaan, checklist penutupan.
+  - **`docs/LOG_INTERAKSI.md`:** indeks 25 ➔ 30 log (A1 16, A2 3, A3 5, A4 6), audit format 5 log baru (semua lengkap; 15/30 lengkap sesuai template), debugging Stage 6–7, rekap D-001..D-009. `logs/interactions.jsonl`: 29 ➔ **31** entri, seluruhnya 11 *field* valid.
+  - **Koreksi perintah demo:** opsi `--num-steps`/`--output` tidak ada di `main.py` (`unrecognized arguments`); dokumen memakai `--steps`, `--output-image`, `--comparison-image`, `--loss-graph`.
+- **Test Status:**
+  - Seluruh repositori (`pytest tests/ -q`): **90 passed, 2 skipped (CUDA), 60 subtests passed** — tidak ada regresi; tidak ada kode yang diubah di Stage 7.
+  - Demo 1 (`--steps 50 --no-pretrained`, output `demo_*`): loss 9.8481 ➔ 3.8104 (−61.31%), 16.41 detik CPU; `git status` tetap bersih.
+  - `pycodestyle`: 228 E501, 0 E901 (tidak berubah); berkas A4 bersih.
+- **Known Issues:**
+  1. **Mode bobot VGG-19 artefak S06-02:** A4 menjalankan ulang dengan `--no-pretrained` dan mendapat loss awal identik (9.8481), sehingga artefak di `outputs/` dihasilkan dengan VGG-19 *fallback offline* (bobot acak terkalibrasi `fan_in`), bukan bobot ImageNet sesuai D-001. Sudah dicatat di `FINAL_REPORT.md` §4.4 dan README. Saran: A1 menjalankan `python main.py` dengan internet sebelum presentasi dan memutuskan artefak mana yang dipakai.
+  2. Temuan audit S05-01 #3–#8 dan #10 (kosmetik/docstring) masih terbuka di pemilik masing-masing (A1, A2, A3).
+  3. Temuan konsistensi log L1–L6 (status lama di log A2/A3, format log review A1 lama) belum ditindaklanjuti pemilik.
+- **Acceptance:** **MENUNGGU REVIEW** Samuel Aaron (A1).
+- **Langkah Berikutnya:** Setelah disetujui, `S07-01`, `S07-02`, dan **Stage 7** ➔ `COMPLETED`; proyek siap dipresentasikan mengikuti `docs/DEMO_CHECKLIST.md`.
+- **Tanggal / Waktu:** 2026-10-28 21:25 WIB
