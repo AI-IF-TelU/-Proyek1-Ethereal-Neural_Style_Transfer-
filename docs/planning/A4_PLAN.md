@@ -21,7 +21,7 @@
 
 ---
 
-### Stage 5: QA, Code Review & Integration Testing (AKTIF — `S05-01` Selesai, Lanjut `S05-02` & `S05-03`!)
+### Stage 5: QA, Code Review & Integration Testing (AKTIF — `S05-02` & `S05-03` Menunggu Review A1)
 
 > **Status Stage 5 untuk A4 (Muhammad Rafiq Abdurrasyid):**
 > * **`S00-03` & `S05-01` telah resmi DISETUJUI (`APPROVED`) oleh Ketua (A1 - Samuel Aaron).**
@@ -35,7 +35,7 @@
 * **Berkas Selesai:** [logs/A4/S00-03-LOG.md](../../logs/A4/S00-03-LOG.md), [logs/A4/S05-01-LOG.md](../../logs/A4/S05-01-LOG.md), [scripts/log_interaction.py](../../scripts/log_interaction.py), [tests/test_log_interaction.py](../../tests/test_log_interaction.py).
 
 #### S05-02: Validasi & Konsolidasi Log Interaksi AI (Bobot Rubrik 25%)
-* **Status:** `READY` 🟢 (Langsung eksekusi sekarang!)
+* **Status:** `IN_PROGRESS` (menunggu review A1) — 23 log diaudit, [docs/LOG_INTERAKSI.md](../LOG_INTERAKSI.md) menjadi indeks resmi, 20 entri ringkasan A1–A3 ditambahkan ke `logs/interactions.jsonl`; log: [logs/A4/S05-02-LOG.md](../../logs/A4/S05-02-LOG.md).
 * **Tujuan:**
   1. Mengaudit kelengkapan seluruh berkas log di `logs/A1/`, `logs/A2/`, `logs/A3/`, dan `logs/A4/` terhadap format [logs/LOG_TEMPLATE.md](../../logs/LOG_TEMPLATE.md) (Metadata, `0. TAHAP PLANNING`, `1. TAHAP INISIASI / IMPLEMENTATION`, `2. TAHAP PENANGANAN EROR / DEBUGGING`, `3. TESTING, REVIEW & HANDOFF`).
   2. Memperbarui **`docs/LOG_INTERAKSI.md`** dengan indeks komprehensif seluruh log interaksi tim (tabel ringkasan per anggota A1..A4, tautan ke setiap file log di `logs/`, ringkasan kasus *debugging* utama yang berhasil diselesaikan di tiap stage, dan keputusan arsitektur `D-001` s.d. `D-008`).
@@ -44,7 +44,7 @@
 * **Target Berkas:** `docs/LOG_INTERAKSI.md`, `logs/A4/S05-02-LOG.md`, `logs/interactions.jsonl`
 
 #### S05-03: Integration Testing & Handoff Stage 5 ke Stage 6 (A1)
-* **Status:** `READY` 🟢 (Kerjakan langsung bersama/setelah `S05-02`!)
+* **Status:** `IN_PROGRESS` (menunggu review A1) — `tests/test_integration.py` 16 passed, `pytest` 82 passed, 2 skipped (CUDA); Temuan #1 & #2 diperbaiki; Temuan #11 baru (L-BFGS gagal pada tensor non-kontigu) diperbaiki dan perlu konfirmasi A1; log: [logs/A4/S05-03-LOG.md](../../logs/A4/S05-03-LOG.md).
 * **Tujuan:**
   1. Membuat berkas pengujian integrasi **`tests/test_integration.py`** yang menguji rantai *end-to-end* lintas-modul di memori:
      `PIL.Image` $\rightarrow$ `preprocess_image` (A2) $\rightarrow$ `get_vgg19_model(weights=None)` & `get_features` (A1) $\rightarrow$ `gram_matrix`, `compute_content_loss`, `compute_style_loss`, `compute_total_loss` (A3) $\rightarrow$ `run_style_transfer` (`adam` & `lbfgs`, A3) $\rightarrow$ `deprocess_image` (A2) menghasilkan `PIL.Image` RGB yang valid dan penurunan nilai loss yang konvergen.
