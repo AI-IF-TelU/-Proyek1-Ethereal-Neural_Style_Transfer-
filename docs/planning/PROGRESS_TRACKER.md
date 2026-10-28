@@ -24,9 +24,9 @@ Dokumen ini adalah **pusat kendali dan status resmi (*Single Source of Truth*)**
 | **Stage 2** | Data Pipeline | A2 | `COMPLETED` | Preprocessing selesai dan lolos `test_preprocessing.py`. |
 | **Stage 3** | VGG-19 Feature Extractor | A1 | `COMPLETED` | Layer VGG-19 beku tervalidasi bentuk tensornya. |
 | **Stage 4** | Loss & Optimization | A3 | `COMPLETED` | Gram Matrix, Content/Style Loss teruji numerik. |
-| **Stage 5** | QA & Dokumentasi | A4 | `IN_PROGRESS` | Integration test lulus tanpa regresi, log terverifikasi. |
-| **Stage 6** | Integrasi & Evaluasi | A1 & Tim | `PENDING` | NST berjalan end-to-end menghasilkan gambar valid. |
-| **Stage 7** | Finalisasi Proyek | Seluruh Tim | `PENDING` | Laporan akhir, repositori bersih, siap presentasi. |
+| **Stage 5** | QA & Dokumentasi | A4 | `COMPLETED` | Integration test lulus tanpa regresi, log terverifikasi. |
+| **Stage 6** | Integrasi & Evaluasi | A1 & Tim | `COMPLETED` | NST berjalan end-to-end menghasilkan gambar valid. |
+| **Stage 7** | Finalisasi Proyek | Seluruh Tim | `IN_PROGRESS` | Laporan akhir, repositori bersih, siap presentasi. |
 
 ---
 
@@ -57,12 +57,12 @@ Dokumen ini adalah **pusat kendali dan status resmi (*Single Source of Truth*)**
 | **S04-04** | A3 | Optimization Loop Piksel (L-BFGS/Adam) | S04-03 | `COMPLETED` | Pytest: 9 passed (TestRunStyleTransfer); disetujui A1 | [S04-04](../../logs/A3/S04-04-LOG.md) / [Review A1](../../logs/A1/S04-04-05-REVIEW-LOG.md) |
 | **S04-05** | A3 | Testing & Tuning Hyperparameter Loss | S04-04 | `COMPLETED` | Pytest: 58 passed repositori; analisis kompleksitas selesai; disetujui A1 | [S04-05](../../logs/A3/S04-05-LOG.md) / [Review A1](../../logs/A1/S04-04-05-REVIEW-LOG.md) |
 | **S05-01** | A4 | Audit Kepatuhan Kode & Standar PEP 8 | Stage 4 | `COMPLETED` | pycodestyle: 228 E501, 2 E901; pytest 66 passed; disetujui A1 | [S05-01](../../logs/A4/S05-01-LOG.md) / [Review A1](../../logs/A1/S05-01-REVIEW-LOG.md) |
-| **S05-02** | A4 | Validasi & Konsolidasi Log Interaksi AI | S05-01 | `IN_PROGRESS` (menunggu review A1) | 23 log diaudit; `docs/LOG_INTERAKSI.md` jadi indeks resmi; JSONL 4 → 25 entri | [S05-02](../../logs/A4/S05-02-LOG.md) / [Indeks](../LOG_INTERAKSI.md) |
-| **S05-03** | A4 | Integration Testing & Error Troubleshooting | S05-02 | `IN_PROGRESS` (menunggu review A1) | `test_integration.py` 16 passed; pytest 82 passed, 2 skipped; 0 E901 | [S05-03](../../logs/A4/S05-03-LOG.md) |
-| **S06-01** | A1 | Integrasi End-to-End Pipeline NST | Stage 5 | `PENDING` | `python main.py` | [logs/A1/](../../logs/A1/) |
-| **S06-02** | A1 | Evaluasi Output Gambar & Grafik Loss | S06-01 | `PENDING` | Visual inspection | [logs/A1/](../../logs/A1/) |
-| **S07-01** | A4 | Finalisasi Laporan Proyek & Dokumentasi | Stage 6 | `PENDING` | Audit dokumen | [logs/A4/](../../logs/A4/) |
-| **S07-02** | Semua| Final Acceptance & Persiapan Presentasi | S07-01 | `PENDING` | Demo rehearsal | Seluruh Tim |
+| **S05-02** | A4 | Validasi & Konsolidasi Log Interaksi AI | S05-01 | `COMPLETED` | 25 log diaudit, 26 entri JSONL; disetujui A1 | [S05-02](../../logs/A4/S05-02-LOG.md) / [Review A1](../../logs/A1/S05-02-03-REVIEW-LOG.md) |
+| **S05-03** | A4 | Integration Testing & Error Troubleshooting | S05-02 | `COMPLETED` | `pytest`: 82 passed, 2 skipped (CUDA), 60 subtests; disetujui A1 | [S05-03](../../logs/A4/S05-03-LOG.md) / [Review A1](../../logs/A1/S05-02-03-REVIEW-LOG.md) |
+| **S06-01** | A1 | Integrasi End-to-End Pipeline NST | Stage 5 | `COMPLETED` | `pytest`: 90 passed, 2 skipped (CUDA); `0 E501` pada berkas Stage 6 | [S06-01](../../logs/A1/S06-01-LOG.md) |
+| **S06-02** | A1 | Evaluasi Output Gambar & Grafik Loss | S06-01 | `COMPLETED` | `python main.py`: L-BFGS 50 steps (`loss 9.8481 -> 3.8076`, `-61.34%`) | [S06-02](../../logs/A1/S06-02-LOG.md) |
+| **S07-01** | A4 | Finalisasi Laporan Proyek & Dokumentasi | Stage 6 | `READY` | Audit dokumen & laporan akhir | [logs/A4/](../../logs/A4/) |
+| **S07-02** | Semua| Final Acceptance & Persiapan Presentasi | S07-01 | `READY` | Demo rehearsal & checklist | Seluruh Tim |
 
 ---
 

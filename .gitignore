@@ -13,13 +13,18 @@ ENV/
 outputs/images/*
 outputs/graphs/*
 !outputs/images/.gitkeep
+!outputs/images/stylized_output.png
+!outputs/images/comparison_grid.png
 !outputs/graphs/.gitkeep
+!outputs/graphs/loss_curve.png
 
 # Assets
 assets/content/*
 assets/style/*
 !assets/content/.gitkeep
+!assets/content/content_sample.png
 !assets/style/.gitkeep
+!assets/style/style_sample.png
 
 # Logs
 *.log

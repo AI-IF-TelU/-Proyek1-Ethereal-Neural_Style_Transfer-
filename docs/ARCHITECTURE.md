@@ -103,9 +103,20 @@ graph TD
 * **`run_style_transfer(content_tensor: torch.Tensor, style_tensor: torch.Tensor, model: torch.nn.Module, num_steps: int = 300, alpha: float = 1.0, beta: float = 1e4, optimizer_type: str = "lbfgs", learning_rate: float = 1.0, init_mode: str = "content", style_weights: Mapping[str, float] | None = None, content_layer: str = "conv4_2", seed: int = 42) -> tuple[torch.Tensor, list[float]]`**
   * *Deskripsi:* Menjalankan loop optimasi piksel gambar target menggunakan optimizer `"lbfgs"` (dengan `closure()`) atau `"adam"`, mendukung inisialisasi `"content"`, `"style"`, atau `"random"`, menerapkan `clamp_imagenet_tensor_` tiap langkah, dan mengembalikan `(generated_tensor.detach(), loss_history)`.
 
-### E. Modul Visualisasi (`src/visualization.py`) — PIC: A1 / A4
-* **`save_image(tensor: torch.Tensor, output_path: str | Path) -> None`**
-* **`plot_loss_history(loss_history: list[float], output_path: str | Path) -> None`**
+### E. Modul Visualisasi & Integrasi Pipeline (`src/visualization.py` & `main.py`) — PIC: A1
+
+> **Kebijakan Visualisasi & Integrasi End-to-End (Keputusan D-009):**
+> 1. Menggunakan backend non-interaktif Matplotlib (`matplotlib.use("Agg")`) agar pembuatan grafik berjalan stabil di lingkungan CLI/headless.
+> 2. Seluruh hyperparameter dikelola melalui `config/config.yaml` dan dapat di-*override* lewat argumen CLI `main.py`.
+
+* **`save_image(tensor: torch.Tensor | Image.Image, output_path: str | Path) -> None`**
+  * *Deskripsi:* Memvalidasi ekstensi berkas tujuan (`.png`, `.jpg`, `.jpeg`), mengonversi tensor terstandarisasi ImageNet melalui `deprocess_image(tensor)` (atau menerima `PIL.Image.Image` langsung), membuat folder induk secara otomatis, dan menyimpan gambar RGB ke `output_path`.
+* **`plot_loss_history(loss_history: Sequence[float], output_path: str | Path, title: str = ...) -> None`**
+  * *Deskripsi:* Memvalidasi urutan nilai loss numerik *finite* non-negatif dan memplot kurva konvergensi *Total Loss* terhadap langkah iterasi (`1..N`) beserta anotasi *Initial Loss*, *Final Loss*, dan persentase penurunan loss ke `output_path`.
+* **`save_comparison_grid(content_image: torch.Tensor | Image.Image, style_image: torch.Tensor | Image.Image, generated_image: torch.Tensor | Image.Image, output_path: str | Path, title: str = ...) -> None`**
+  * *Deskripsi:* Menyusun dan menyimpan gambar panel perbandingan 3 kolom (*Content Image* | *Style Image* | *Stylized Output*) untuk keperluan evaluasi visual `S06-02` dan dokumentasi akhir Stage 7.
+* **`main(argv: Sequence[str] | None = None) -> dict[str, Any]` (`main.py`)**
+  * *Deskripsi:* Membaca `config/config.yaml` (`load_config`), menerapkan override argumen CLI (`build_arg_parser`), dan mengeksekusi rantai penuh `run_pipeline(config)`: `preprocess_image` $\rightarrow$ `get_vgg19_model` $\rightarrow$ `run_style_transfer` $\rightarrow$ `save_image`, `plot_loss_history`, dan `save_comparison_grid`.
 
 ---
 

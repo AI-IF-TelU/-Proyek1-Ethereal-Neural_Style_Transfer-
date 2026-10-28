@@ -10,6 +10,7 @@
 | D-006 | Spesifikasi Kontrak & Arsitektur VGG-19 Feature Extractor (`S03-01` & `S03-02`) | Menjamin ekstraksi fitur `conv1_1`..`conv5_1` & `conv4_2` bebas mutasi `ReLU(inplace=True)`, hemat memori lewat pemotongan `features[:29]`, dan aman bagi aliran gradien ke `generated_img` | Menggunakan `vgg19.features` utuh 37 layer dengan `ReLU(inplace=True)` | A1 (Samuel Aaron - Lead/Arsitek) |
 | D-007 | Spesifikasi Kontrak Fungsi Loss NST (`S04-01` s.d. `S04-03` pada `src/losses.py`) | Menetapkan kontrak validasi, `.detach()` pada target fitur/Gram, serta bobot default `DEFAULT_STYLE_WEIGHTS` agar perhitungan loss konsisten dengan Stage 3 dan aman bagi *backward pass* di Stage 4 | Menghitung ulang fitur target dengan grafik autograd aktif | A1 (Samuel) & A3 (Hafiz) |
 | D-008 | Spesifikasi Kontrak Optimization Loop Piksel & Clamping Ruang ImageNet (`S04-04` & `S04-05` pada `src/optimization.py`) | Mencegah rusaknya rentang warna akibat clamping mentah `[0, 1]` pada ruang ternormalisasi ImageNet, menjamin prekomputasi fitur target sekali di awal, dan menyeragamkan API `run_style_transfer` | Clamping mentah `[0, 1]` atau menghitung ulang fitur target tiap iterasi | A1 (Samuel) & A3 (Hafiz) |
+| D-009 | Spesifikasi Integrasi End-to-End Pipeline (`main.py`), Visualisasi (`src/visualization.py`), & Memori Kontigu L-BFGS (`S05-03` / `S06-01` / `S06-02`) | Menjamin kompatibilitas stride tensor `preprocess_image` dengan `L-BFGS` (`torch.contiguous_format`) serta menyatukan konfigurasi YAML, CLI, penyimpanan gambar, dan grafik loss | Membiarkan tensor non-kontigu pada inisialisasi L-BFGS atau konfigurasi hardcoded | Seluruh Tim (A1 Lead & A4 QA) |
 
 ---
 
@@ -185,3 +186,23 @@
 - **Persetujuan:** Disetujui oleh Samuel Aaron (A1 - Ketua / Arsitek) untuk dieksekusi oleh Hafiz Fajar Ramadhan (A3).
 - **Dampak:** `docs/ARCHITECTURE.md`, `docs/planning/A3_PLAN.md`, `src/optimization.py`, `tests/test_optimization.py`, `docs/COMPLEXITY_ANALYSIS.md`.
 - **Pencatatan Sistem:** 2026-10-27T15:50:00+07:00 (WIB).
+
+---
+
+## D-009: Spesifikasi Integrasi End-to-End Pipeline (`main.py`), Visualisasi (`src/visualization.py`), & Memori Kontigu L-BFGS (`S05-03` / `S06-01` / `S06-02`)
+
+- **Konteks:**
+  1. Pada tahap Integration Testing `S05-03` oleh A4 (Muhammad Rafiq Abdurrasyid), ditemukan bahwa `preprocess_image` (Stage 2) menghasilkan tensor berstride *channels-last* (non-kontigu) akibat `.permute(2, 0, 1)`, sedangkan `torch.optim.LBFGS` memanggil `p.grad.view(-1)` yang mensyaratkan memori kontigu.
+  2. Pada tahap `S06-01` & `S06-02`, seluruh modul (`preprocessing`, `feature_extractor`, `losses`, `optimization`, dan `visualization`) perlu dihubungkan melalui konfigurasi terpusat `config/config.yaml` dan antarmuka CLI `main.py` untuk menghasilkan artefak visual akhir di `outputs/images/` dan `outputs/graphs/`.
+- **Keputusan Teknis (`D-009`):**
+  1. **Pengesahan Inisialisasi Kontigu pada `run_style_transfer` (`src/optimization.py`):**
+     - Menyalin tensor inisialisasi `content` dan `style` dengan `clone(memory_format=torch.contiguous_format)` serta memvalidasi `isinstance(optimizer_type, str)` dan `isinstance(init_mode, str)` agar melempar `TypeError` sesuai kontrak docstring.
+  2. **Kontrak Modul Visualisasi (`src/visualization.py`):**
+     - `save_image(tensor: torch.Tensor | Image.Image, output_path: str | Path) -> None`: Menerima tensor 4D/3D (otomatis dideproses lewat `deprocess_image`) atau `PIL.Image`, memvalidasi ekstensi (`.png`, `.jpg`, `.jpeg`), membuat direktori induk otomatis, dan menyimpan berkas gambar RGB.
+     - `plot_loss_history(loss_history: Sequence[float], output_path: str | Path, title: str = ...) -> None`: Memvalidasi sequence loss *finite* non-negatif dan memplot kurva konvergensi menggunakan backend Matplotlib `'Agg'` beserta kotak ringkasan metrik (*Initial Loss*, *Final Loss*, dan persentase penurunan).
+     - `save_comparison_grid(content_image, style_image, generated_image, output_path, title=...) -> None`: Menyusun panel perbandingan 3 kolom (*Content* | *Style* | *Stylized Output*) untuk evaluasi visual `S06-02` dan laporan akhir Stage 7.
+  3. **Kontrak Entry Point & Konfigurasi (`main.py` & `config/config.yaml`):**
+     - Seluruh hyperparameter dan path default disimpan di `config/config.yaml` dan dapat di-*override* melalui argumen CLI pada `main.py` (`--config`, `--content`, `--style`, `--output-image`, `--comparison-image`, `--loss-graph`, `--size`, `--steps`, `--alpha`, `--beta`, `--optimizer`, `--lr`, `--init-mode`, `--device`, `--seed`, `--no-pretrained`).
+- **Persetujuan:** Disetujui oleh Samuel Aaron (A1 - Ketua / Arsitek) dan Muhammad Rafiq Abdurrasyid (A4 - QA).
+- **Dampak:** `src/optimization.py`, `src/visualization.py`, `main.py`, `config/config.yaml`, `tests/test_integration.py`, `tests/test_visualization.py`.
+- **Pencatatan Sistem:** 2026-10-28T17:18:00+07:00 (WIB).
