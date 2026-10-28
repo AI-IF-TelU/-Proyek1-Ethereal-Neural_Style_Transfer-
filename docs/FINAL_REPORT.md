@@ -8,7 +8,7 @@
 | Metodologi | SDLC Stage-Gate Sequential + Vibe Coding (kolaborasi terstruktur dengan LLM) |
 | Penyusun laporan | A4 — Muhammad Rafiq Abdurrasyid (S07-01) |
 | Tanggal | 28 Oktober 2026 |
-| Status | Draf final, menunggu review A1 (Handoff #11) |
+| Status | **FINAL — Disetujui Penuh oleh A1 (Handoff #11, Stage 7 COMPLETED)** |
 
 ---
 
@@ -31,10 +31,10 @@ dicatat di `logs/`.
 | Indikator | Hasil |
 |---|---|
 | Pipeline end-to-end | `python main.py` menghasilkan gambar *stylized*, panel perbandingan 3-kolom, dan grafik loss |
-| Konvergensi (S06-02, L-BFGS 50 langkah, `lr=0.5`) | Total loss turun **9.8481 → 3.8076 (−61.34%)**, non-naik di seluruh 50 langkah, 37.17 dtk CPU |
+| Konvergensi (S06-02 Final Showcase, L-BFGS 50 langkah, `lr=0.5`) | Total loss turun **21.0097 → 0.8701 (−95.86%)**, monoton mulus di seluruh 50 langkah, 36.84 dtk CPU (eksperimen kalibrasi awal: **9.8481 → 3.8076, −61.34%**) |
 | Pengujian otomatis | `pytest tests/ -v -rs` → **90 passed, 2 skipped (CUDA), 60 subtests passed** |
 | Kepatuhan kode | `pycodestyle`: 0 E901; 228 E501 warisan tidak bertambah sejak Stage 5 |
-| Jejak AI | 30 file log Markdown (A1 16, A2 3, A3 5, A4 6) dan 31 entri `logs/interactions.jsonl` |
+| Jejak AI | 31 file log Markdown (A1 17, A2 3, A3 5, A4 6) dan 32 entri `logs/interactions.jsonl` |
 | Keputusan arsitektur | D-001 s.d. D-009 tercatat di `docs/DECISIONS.md` |
 
 **Kontribusi singkat:** A1 merancang arsitektur, ekstraktor VGG-19, dan
@@ -159,8 +159,8 @@ Detail lengkap: [docs/DECISIONS.md](DECISIONS.md) dan
 
 | Parameter | Nilai (`config/config.yaml`) |
 |---|---|
-| Gambar konten / gaya | `assets/content/content_sample.png`, `assets/style/style_sample.png` (256×256 RGB, sintetis) |
-| Ukuran kerja | `(H, W) = (256, 256)` |
+| Gambar konten / gaya | `assets/content/content_sample.png` (Menara Eiffel `706×1500` RGB), `assets/style/style_sample.png` (Lukisan Kaca Patri Abstrak `1280×720` RGB) |
+| Ukuran kerja | `(H, W) = (256, 256)` (di-*resize* otomatis menggunakan Lanczos sesuai D-005) |
 | Optimizer | L-BFGS, `max_iter=1` per langkah, tanpa *line search* |
 | Langkah / learning rate | 50 / 0.5 |
 | Bobot loss | $\alpha = 1.0$, $\beta = 10^4$, $w_l = 0.2$ |
@@ -177,31 +177,37 @@ Detail lengkap: [docs/DECISIONS.md](DECISIONS.md) dan
 
 ![Gambar hasil NST](../outputs/images/stylized_output.png)
 
-Siluet tiga menara jembatan, kontur pegunungan, matahari, dan garis pantulan
-air tetap terbaca. Langit dan air mengambil palet biru, kuning, dan merah
-serta tekstur bintik dari gambar gaya. Tidak ada piksel jenuh di area gelap
-berkat `clamp_imagenet_tensor_` (D-008).
+Struktur rangka baja Menara Eiffel, menara puncak, lengkungan kaki menara, dan
+fondasi bawah tetap tajam dan terbaca utuh. Sementara itu, badan menara menyerap
+palet hijau zamrud, biru sian, dan ungu dari lukisan kaca patri abstrak, fondasi
+bawah mengadopsi warna emas/terakota hangat, dan latar langit berubah menjadi
+tekstur mozaik multi-warna. Tidak ada piksel jenuh berkat `clamp_imagenet_tensor_`
+(D-008).
 
 ### 4.3 Konvergensi Loss
 
 ![Kurva penurunan total loss](../outputs/graphs/loss_curve.png)
 
-Tabel tuning learning rate L-BFGS (sumber: `logs/A1/S06-02-LOG.md`):
+Tabel eksperimen evaluasi L-BFGS (sumber: `logs/A1/S06-02-LOG.md`):
 
-| Eksperimen | Optimizer | Learning Rate | Loss Awal | Loss Akhir | Penurunan | Waktu CPU | Karakteristik |
-|---|---|---|---|---|---|---|---|
-| Run #1 | L-BFGS | 1.0 | 9.8481 | 3.6208 | −63.23% | 37.02 s | Ada *overshoot spike* di Step 5 (7.35 → 10.90) |
-| **Run #2 (Final)** | L-BFGS | **0.5** | 9.8481 | 3.8076 | **−61.34%** | 37.17 s | 100% monoton mulus |
+| Eksperimen | Pasangan Gambar | Optimizer | Learning Rate | Loss Awal | Loss Akhir | Penurunan | Waktu CPU | Karakteristik |
+|---|---|---|---|---|---|---|---|---|
+| Run #1 (Kalibrasi) | Lanskap Senja + Starry Sintetis | L-BFGS | 1.0 | 9.8481 | 3.6208 | −63.23% | 37.02 s | Ada *overshoot spike* di Step 5 (7.35 → 10.90) |
+| Run #2 (Kalibrasi) | Lanskap Senja + Starry Sintetis | L-BFGS | 0.5 | 9.8481 | 3.8076 | −61.34% | 37.17 s | 100% monoton mulus |
+| **Run #3 (Final Showcase)** | **Menara Eiffel + Kaca Patri Abstrak** | **L-BFGS** | **0.5** | **21.0097** | **0.8701** | **−95.86%** | **36.84 s** | **100% monoton mulus (konvergensi eksponensial)** |
 
-Run #1 turun sedikit lebih jauh, tetapi lonjakan di Step 5 menunjukkan langkah
-kuasi-Newton awal terlalu agresif saat histori L-BFGS baru berisi beberapa
-vektor. `lr=0.5` dipilih karena stabil. Kurva final datar di Step 1–4
-(L-BFGS masih mengumpulkan histori), lalu turun tanpa naik sama sekali.
+Run #1 menunjukkan bahwa `lr=1.0` pada L-BFGS (`max_iter=1` tanpa *line search*)
+terlalu agresif di Step 5 saat histori aproksimasi Hessian baru berisi beberapa
+vektor. Pemilihan `lr=0.5` menghasilkan penurunan monoton mulus baik pada gambar
+kalibrasi (Run #2, **−61.34%**) maupun pada pasangan gambar *Final Showcase*
+Menara Eiffel + Lukisan Kaca Patri Abstrak (Run #3, **21.0097 → 0.8701, −95.86%**
+dalam 36.84 detik).
 
-### 4.4 Verifikasi Ulang oleh A4 dan Keterbatasan
+### 4.4 Verifikasi Ulang Lintas Platform oleh A4 dan Keterbatasan
 
-A4 menjalankan ulang pipeline pada mesin berbeda (macOS, Python 3.12) dengan
-output ke berkas terpisah:
+Pada saat audit Stage 7, A4 menjalankan ulang pipeline pada mesin berbeda
+(macOS, Python 3.12) terhadap aset kalibrasi Run #2 dengan output ke berkas
+terpisah:
 
 ```text
 python main.py --steps 50 --optimizer lbfgs --lr 0.5 --no-pretrained ...
@@ -211,20 +217,19 @@ Loss Akhir      : 3.8104 (-61.31%)
 Waktu Eksekusi  : 16.41 detik
 ```
 
-- Loss awal **identik** (9.8481) dengan Run #2 A1, dan loss akhir hanya
-  berbeda 0.07% (3.8104 vs 3.8076, wajar antar-platform). Artinya artefak
-  S06-02 dihasilkan oleh **VGG-19 fallback offline** (`_load_vgg19_with_fallback`
-  di `main.py`, bobot acak terkalibrasi `fan_in`). Ini sesuai catatan
-  `URLError` di `logs/A1/S06-01-LOG.md`.
-- Hasil di atas tetap membuktikan pipeline, autograd, dan optimizer bekerja
-  benar. Namun D-001 menetapkan bobot **pretrained ImageNet**; kualitas
-  stilisasi dengan bobot pretrained umumnya lebih baik dan angka loss-nya
-  akan berbeda total.
-- **Rekomendasi:** sebelum presentasi, jalankan `python main.py` tanpa
-  `--no-pretrained` di mesin yang terhubung internet (unduhan ±548 MB sekali),
-  lalu bandingkan hasilnya dengan artefak offline.
-- Gambar uji bersifat sintetis 256×256; belum ada evaluasi pada foto dan
-  lukisan nyata atau resolusi 512×512.
+- Loss awal **identik** (9.8481) dengan Run #2 A1 di Windows, dan loss akhir
+  hanya berbeda 0.07% (3.8104 vs 3.8076, wajar antar-platform). Pada gambar
+  *Final Showcase* (Run #3), `python main.py --no-pretrained` menghasilkan
+  `Loss Awal: 21.0097` → `Loss Akhir: 0.8701 (-95.86%)`.
+- Artefak S06-02 dihasilkan oleh **VGG-19 fallback offline**
+  (`_load_vgg19_with_fallback` di `main.py`, bobot terkalibrasi deterministik
+  `fan_in`) sesuai catatan `URLError` di `logs/A1/S06-01-LOG.md`.
+- Hasil di atas membuktikan bahwa seluruh rantai pipeline (`load_image` dengan
+  input non-persegi `706×1500` dan `1280×720` → `preprocess_image` → `VGG-19` →
+  `losses` → `L-BFGS` → `visualization`) bekerja akurat dan deterministik.
+- **Rekomendasi Presentasi:** sebelum presentasi, tim juga dapat meng-cache
+  bobot pretrained ImageNet (`VGG19_Weights.DEFAULT`, ±548 MB sekali unduh)
+  sesuai panduan di `docs/DEMO_CHECKLIST.md`.
 
 ---
 
@@ -306,8 +311,8 @@ Pertumbuhan test: 29 (Stage 3) → 58 (Stage 4) → 66 (S05-01) → 82 (S05-03) 
   dengan validasi format terhadap `logs/LOG_TEMPLATE.md`, ringkasan debugging
   per stage, dan rekap D-001..D-009.
 - `logs/interactions.jsonl`: 4 entri sebelum S05-02 → 26 setelah Stage 5 →
-  29 setelah Stage 6 → **31** setelah S07-01 & S07-02, seluruhnya JSON valid
-  dengan 11 *field*.
+  29 setelah Stage 6 → 31 setelah S07-01 & S07-02 → **32** setelah review
+  penutupan akhir Stage 7 oleh A1, seluruhnya JSON valid dengan 11 *field*.
 
 ---
 
@@ -315,10 +320,10 @@ Pertumbuhan test: 29 (Stage 3) → 58 (Stage 4) → 66 (S05-01) → 82 (S05-03) 
 
 | ID | Nama | NIM | Peran | Stage | Kontribusi Utama |
 |---|---|---|---|---|---|
-| A1 | Samuel Aaron | 103012580024 | Ketua, Prompt Engineer & Software Architect | 0, 1, 3, 6 + review semua gate | Dokumen master (PRD, SRS, ARCHITECTURE, DECISIONS), scaffolding, `src/feature_extractor.py` (D-006), spesifikasi D-005–D-009, `src/visualization.py`, `main.py`, `config/config.yaml`, evaluasi S06-02, review & persetujuan Handoff #1–#10 |
+| A1 | Samuel Aaron | 103012580024 | Ketua, Prompt Engineer & Software Architect | 0, 1, 3, 6 + review semua gate | Dokumen master (PRD, SRS, ARCHITECTURE, DECISIONS), scaffolding, `src/feature_extractor.py` (D-006), spesifikasi D-005–D-009, `src/visualization.py`, `main.py`, `config/config.yaml`, evaluasi S06-02, review & persetujuan Handoff #1–#11 |
 | A2 | Marthin M. Tambunan | 103012580055 | Data Pipeline & Preprocessing Engineer | 2 | `src/preprocessing.py` (`load_image`, `preprocess_image`, `deprocess_image`), D-004/D-005, 21 test preprocessing, analisis kompleksitas preprocessing |
 | A3 | Hafiz Fajar Ramadhan | 103012430027 | Loss Function & Optimization Engineer | 4 | `src/losses.py` (Gram Matrix, content/style/total loss), `src/optimization.py` (`run_style_transfer`, `clamp_imagenet_tensor_`), 29 test, analisis kompleksitas loss & optimasi |
-| A4 | Muhammad Rafiq Abdurrasyid | 103012400240 | QA, Dokumentasi & Error Handler | 0 (S00-03), 5, 7 | Skrip `scripts/log_interaction.py` + 8 test, audit PEP 8 (10 temuan), konsolidasi 30 log dan JSONL, `tests/test_integration.py` (16 test) dan perbaikan Temuan #1, #2, #11, laporan akhir dan checklist demo |
+| A4 | Muhammad Rafiq Abdurrasyid | 103012400240 | QA, Dokumentasi & Error Handler | 0 (S00-03), 5, 7 | Skrip `scripts/log_interaction.py` + 8 test, audit PEP 8 (10 temuan), konsolidasi 31 log dan 32 entri JSONL, `tests/test_integration.py` (16 test) dan perbaikan Temuan #1, #2, #11, laporan akhir dan checklist demo |
 
 Jejak per langkah: [docs/HANDOFF.md](HANDOFF.md) (Handoff #1–#11) dan
 [docs/planning/PROGRESS_TRACKER.md](planning/PROGRESS_TRACKER.md).

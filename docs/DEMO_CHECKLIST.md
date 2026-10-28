@@ -29,8 +29,8 @@ Kerjakan berurutan di laptop yang dipakai presentasi, paling lambat H-1.
 
 > **Catatan mode bobot.** Artefak resmi di `outputs/` dihasilkan dengan VGG-19
 > *fallback offline* (`--no-pretrained`), bukan bobot ImageNet
-> ([FINAL_REPORT.md §4.4](FINAL_REPORT.md#44-verifikasi-ulang-oleh-a4-dan-keterbatasan)).
-> - Untuk mereproduksi angka resmi (9.8481 → ±3.81), jalankan Demo 1 dengan
+> ([FINAL_REPORT.md §4.4](FINAL_REPORT.md#44-verifikasi-ulang-lintas-platform-oleh-a4-dan-keterbatasan)).
+> - Untuk mereproduksi angka resmi *Final Showcase* (21.0097 → ±0.87, −95.86%), jalankan Demo 1 dengan
 >   `--no-pretrained`.
 > - Untuk demo dengan bobot pretrained ImageNet (sesuai D-001), unduh bobot
 >   (±548 MB) **sebelum** hari H agar tidak terunduh saat demo:
@@ -48,7 +48,7 @@ Total ±25 menit (5–7 menit per anggota) + tanya-jawab.
 | 1 | **A1 — Samuel Aaron** | 6–7 mnt | Tujuan proyek, arsitektur 5 modul + `main.py`, keputusan D-001–D-009, **Demo 1** (`main.py`) | `docs/ARCHITECTURE.md`, `docs/DECISIONS.md`, FINAL_REPORT §3 |
 | 2 | **A2 — Marthin M. Tambunan** | 5 mnt | Pipeline preprocessing: load JPEG/PNG → RGB → resize Lanczos `size=(H, W)` → normalisasi ImageNet → tensor `(1, 3, H, W)`; kebalikannya di `deprocess_image`; kebijakan D-005 | `src/preprocessing.py`, FINAL_REPORT §3.1 |
 | 3 | **A3 — Hafiz Fajar Ramadhan** | 6–7 mnt | Gram Matrix, content/style/total loss (rumus + implementasi `F.mse_loss`), loop optimasi L-BFGS/Adam, `clamp_imagenet_tensor_`, tuning `lr` 1.0 vs 0.5 | `src/losses.py`, `src/optimization.py`, FINAL_REPORT §2 & §4.3 |
-| 4 | **A4 — Muhammad Rafiq Abdurrasyid** | 5–6 mnt | Metodologi Vibe Coding + Stage-Gate (plan → approval → eksekusi → log), audit PEP 8 (10 temuan), integration test & Temuan #11, konsolidasi 30 log / 31 entri JSONL, laporan akhir, **Demo 2 & 3** | `docs/LOG_INTERAKSI.md`, `tests/test_integration.py`, FINAL_REPORT §6 |
+| 4 | **A4 — Muhammad Rafiq Abdurrasyid** | 5–6 mnt | Metodologi Vibe Coding + Stage-Gate (plan → approval → eksekusi → log), audit PEP 8 (10 temuan), integration test & Temuan #11, konsolidasi 31 log / 32 entri JSONL, laporan akhir, **Demo 2 & 3** | `docs/LOG_INTERAKSI.md`, `tests/test_integration.py`, FINAL_REPORT §6 |
 
 Transisi: A1 menutup dengan gambar hasil Demo 1 → A2 memulai dari "bagaimana
 gambar itu menjadi tensor" → A3 dari "apa yang dioptimasi" → A4 menutup
@@ -72,7 +72,7 @@ python main.py --content assets/content/content_sample.png \
                --steps 50 --optimizer lbfgs --lr 0.5 --no-pretrained
 ```
 
-Output yang diharapkan (terverifikasi di macOS, CPU, Python 3.12):
+Output yang diharapkan pada pasangan gambar *Final Showcase* (Menara Eiffel + Kaca Patri Abstrak):
 
 ```text
 === Ringkasan Eksekusi Neural Style Transfer ===
@@ -80,16 +80,15 @@ Perangkat       : cpu (Offline Calibrated VGG-19 (weights=None, fan_in))
 Ukuran (H, W)   : (256, 256)
 Optimizer       : LBFGS (steps=50, lr=0.5, init=content)
 Bobot Loss      : alpha=1.0, beta=10000.0
-Loss Awal       : 9.8481
-Loss Akhir      : 3.8104 (-61.31%)
-Waktu Eksekusi  : 16.41 detik
+Loss Awal       : 21.0097
+Loss Akhir      : 0.8701 (-95.86%)
+Waktu Eksekusi  : 36.84 detik
 Gambar Hasil    : .../outputs/images/demo_output.png
 Panel Komparasi : .../outputs/images/demo_grid.png
 Grafik Loss     : .../outputs/graphs/demo_loss.png
 ```
 
-Loss awal selalu 9.8481. Loss akhir bisa sedikit berbeda antar-mesin
-(A1 di Windows: 3.8076, −61.34%). Waktu bergantung CPU (16–37 detik).
+Loss awal selalu 21.0097 pada aset *Final Showcase* (atau 9.8481 → 3.8104, −61.31% pada aset kalibrasi awal). Waktu bergantung CPU (16–37 detik).
 Setelah selesai, buka `outputs/images/demo_grid.png`.
 
 > Opsi yang benar adalah `--steps` dan `--output-image`. Versi lama
@@ -156,4 +155,4 @@ Output yang diharapkan: **tidak ada output** (exit code 0 = 0 pelanggaran).
 
 - [ ] Hapus berkas demo: `outputs/images/demo_*.png`, `outputs/graphs/demo_*.png`
 - [ ] `git status` bersih
-- [ ] A1 memberi persetujuan akhir Handoff #11 dan menandai Stage 7 `COMPLETED`
+- [x] A1 telah memberi persetujuan akhir Handoff #11 dan menandai Stage 7 `COMPLETED`

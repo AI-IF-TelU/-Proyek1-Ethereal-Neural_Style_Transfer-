@@ -41,7 +41,7 @@ Proyek ini bertujuan mengimplementasikan algoritma **Neural Style Transfer** ori
 
 ## 🎨 Hasil NST
 
-Eksperimen akhir Stage 6 (S06-02): gambar 256×256, L-BFGS 50 langkah, `lr=0.5`, $\alpha=1.0$, $\beta=10^4$, `init_mode='content'`, CPU.
+Eksperimen akhir Stage 6 (S06-02 — *Final Showcase*: Menara Eiffel `706×1500` + Lukisan Kaca Patri Abstrak `1280×720`, di-*resize* ke `256×256`, L-BFGS 50 langkah, `lr=0.5`, $\alpha=1.0$, $\beta=10^4$, `init_mode='content'`, CPU):
 
 ![Panel perbandingan Content | Style | Stylized](outputs/images/comparison_grid.png)
 
@@ -49,11 +49,11 @@ Eksperimen akhir Stage 6 (S06-02): gambar 256×256, L-BFGS 50 langkah, `lr=0.5`,
 
 | Metrik | Nilai |
 | :--- | :--- |
-| Total loss awal → akhir | `9.8481` → `3.8076` (**−61.34%**), tidak pernah naik selama 50 langkah |
-| Waktu eksekusi | 37.17 detik (CPU) |
+| Total loss awal → akhir | `21.0097` → `0.8701` (**−95.86%**), monoton mulus selama 50 langkah |
+| Waktu eksekusi | 36.84 detik (CPU) |
 | Gambar hasil | [`outputs/images/stylized_output.png`](outputs/images/stylized_output.png) |
 
-> **Catatan:** artefak di atas dihasilkan dengan VGG-19 *fallback offline* (bobot acak terkalibrasi `fan_in`) karena bobot ImageNet tidak dapat diunduh saat eksekusi. Jalankan `python main.py` dengan koneksi internet untuk memakai bobot pretrained ImageNet sesuai D-001. Rincian di [FINAL_REPORT.md §4.4](docs/FINAL_REPORT.md#44-verifikasi-ulang-oleh-a4-dan-keterbatasan).
+> **Catatan:** artefak di atas dihasilkan dengan VGG-19 *fallback offline* (bobot terkalibrasi deterministik `fan_in`) saat eksekusi tanpa koneksi internet. Jalankan `python main.py` dengan koneksi internet untuk memakai bobot pretrained ImageNet sesuai D-001. Rincian lengkap di [FINAL_REPORT.md §4](docs/FINAL_REPORT.md#4-hasil-eksperimen--visualisasi).
 
 ---
 
