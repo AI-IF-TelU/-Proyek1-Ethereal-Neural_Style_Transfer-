@@ -89,7 +89,9 @@ def main(argv: Optional[Sequence[str]] = None) -> dict[str, Any]:
         description='Catat satu interaksi AI ke logs/interactions.jsonl.'
     )
     parser.add_argument('--member-id', required=True, choices=MEMBER_IDS)
-    parser.add_argument('--task-id', required=True, help='Step ID, mis. S04-02')
+    parser.add_argument(
+        '--task-id', required=True, help='Step ID, mis. S04-02'
+    )
     parser.add_argument('--phase', required=True)
     parser.add_argument('--model-name', default='')
     parser.add_argument('--session-id', default='')

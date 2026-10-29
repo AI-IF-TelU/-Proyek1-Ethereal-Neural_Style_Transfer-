@@ -1,3 +1,33 @@
-# Konfigurasi NST (placeholder - Stage 0/1)
+# Konfigurasi Utama Pipeline Neural Style Transfer (Stage 6: S06-01 & S06-02)
 project:
   name: neural-style-transfer
+  seed: 42
+
+paths:
+  content_image: assets/content/content_sample.png
+  style_image: assets/style/style_sample.png
+  output_image: outputs/images/stylized_output.png
+  comparison_image: outputs/images/comparison_grid.png
+  loss_graph: outputs/graphs/loss_curve.png
+
+preprocessing:
+  size: [256, 256]  # [height, width] sesuai kebijakan tunggal D-005
+
+model:
+  device: auto      # "auto" (cuda jika tersedia, selain itu cpu), "cpu", "cuda"
+  pretrained: true  # Gunakan bobot pretrained ImageNet VGG-19 (D-006)
+  content_layer: conv4_2
+  style_weights:
+    conv1_1: 0.2
+    conv2_1: 0.2
+    conv3_1: 0.2
+    conv4_1: 0.2
+    conv5_1: 0.2
+
+optimization:
+  optimizer_type: lbfgs
+  num_steps: 50
+  learning_rate: 0.5
+  alpha: 1.0
+  beta: 10000.0
+  init_mode: content

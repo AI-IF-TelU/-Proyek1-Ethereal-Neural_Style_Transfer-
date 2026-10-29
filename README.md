@@ -14,11 +14,13 @@
 </p>
 
 [Tentang Proyek](#-tentang-proyek) •
+[Hasil NST](#-hasil-nst) •
 [Tim Pengembang](#-tim-pengembang) •
 [Arsitektur & Algoritma](#-arsitektur--alur-kerja) •
 [Struktur Direktori](#-struktur-direktori) •
 [Instalasi & Penggunaan](#-panduan-instalasi--eksekusi) •
-[Dokumen Master](#-navigasi-dokumen-master)
+[Dokumen Master](#-navigasi-dokumen-master) •
+[Laporan Akhir](docs/FINAL_REPORT.md)
 
 ---
 
@@ -32,6 +34,26 @@ Proyek ini bertujuan mengimplementasikan algoritma **Neural Style Transfer** ori
 2. **Optimasi terhadap Piksel Gambar:** Variabel yang dioptimasi secara bertahap melalui algoritma optimasi (*gradient descent* / L-BFGS / Adam) adalah nilai piksel dari gambar target (*generated image*), bukan parameter atau bobot model.
 3. **Pengembangan Mandiri (*From Scratch*):** Seluruh formulasi matematis—mulai dari ekstraksi representasi konten, kalkulasi korelasi fitur melalui **Gram Matrix**, perumusan *Style Loss*, hingga perulangan optimasi (*optimization loop*)—diimplementasikan secara mandiri tanpa menggunakan pustaka *style transfer* instan.
 4. **Metodologi Vibe Coding Berdisiplin:** Mengedepankan kolaborasi terstruktur bersama *Large Language Model* (LLM) dengan pendekatan *Stage-Gate Sequential*, di mana seluruh interaksi, proses *debugging*, hingga justifikasi arsitektur terdokumentasi secara transparan.
+
+📄 Laporan lengkap proyek: **[docs/FINAL_REPORT.md](docs/FINAL_REPORT.md)**
+
+---
+
+## 🎨 Hasil NST
+
+Eksperimen akhir Stage 6 (S06-02 — *Final Showcase*: Menara Eiffel `706×1500` + Lukisan Kaca Patri Abstrak `1280×720`, di-*resize* ke `256×256`, L-BFGS 50 langkah, `lr=0.5`, $\alpha=1.0$, $\beta=10^4$, `init_mode='content'`, CPU):
+
+![Panel perbandingan Content | Style | Stylized](outputs/images/comparison_grid.png)
+
+![Kurva penurunan total loss](outputs/graphs/loss_curve.png)
+
+| Metrik | Nilai |
+| :--- | :--- |
+| Total loss awal → akhir | `21.0097` → `0.8701` (**−95.86%**), monoton mulus selama 50 langkah |
+| Waktu eksekusi | 36.84 detik (CPU) |
+| Gambar hasil | [`outputs/images/stylized_output.png`](outputs/images/stylized_output.png) |
+
+> **Catatan:** artefak di atas dihasilkan dengan VGG-19 *fallback offline* (bobot terkalibrasi deterministik `fan_in`) saat eksekusi tanpa koneksi internet. Jalankan `python main.py` dengan koneksi internet untuk memakai bobot pretrained ImageNet sesuai D-001. Rincian lengkap di [FINAL_REPORT.md §4](docs/FINAL_REPORT.md#4-hasil-eksperimen--visualisasi).
 
 ---
 
@@ -160,11 +182,14 @@ neural-style-transfer/
 │   ├── optimization.py    # Modul perulangan optimasi piksel (A3)
 │   └── visualization.py   # Modul visualisasi & plotting hasil (A1/A4)
 │
-├── tests/                 # Unit test otomatis berbasis PyTest
+├── tests/                 # Unit & integration test otomatis berbasis PyTest
 │   ├── test_preprocessing.py
 │   ├── test_feature_extractor.py
 │   ├── test_losses.py
-│   └── test_optimization.py
+│   ├── test_optimization.py
+│   ├── test_integration.py      # Pipeline end-to-end lintas-modul (A4)
+│   ├── test_visualization.py    # Visualisasi & CLI main.py (A1)
+│   └── test_log_interaction.py  # Skrip pencatat log AI (A4)
 │
 ├── main.py                # Titik masuk utama eksekusi program (CLI)
 ├── requirements.txt       # Daftar dependensi pustaka Python
@@ -203,18 +228,58 @@ pip install --upgrade pip
 pip install -r requirements.txt
 ```
 
-### 4. Menjalankan Pengujian Otomatis (*Unit Tests*)
+### 4. Status Pengujian (*Unit & Integration Tests*)
 Sebelum menjalankan proses komputasi utama, pastikan seluruh modul lolos validasi kontrak:
 ```powershell
-pytest -v
+pytest tests/ -v -rs
 ```
+Hasil terakhir (Stage 6–7): **90 passed, 2 skipped (CUDA), 60 subtests passed**. Dua test dilewati otomatis bila GPU CUDA tidak tersedia.
 
-### 5. Menjalankan Program Utama (*CLI Execution*)
-Letakkan gambar konten pada `assets/content/` dan gambar gaya pada `assets/style/`, kemudian jalankan:
+| Berkas Test | Hasil |
+| :--- | :--- |
+| `test_preprocessing.py` | 21 passed, 1 skipped (CUDA) |
+| `test_feature_extractor.py` | 8 passed, 1 skipped (CUDA) |
+| `test_losses.py` | 20 passed |
+| `test_optimization.py` | 9 passed |
+| `test_integration.py` | 16 passed |
+| `test_visualization.py` | 8 passed |
+| `test_log_interaction.py` | 8 passed |
+
+### 5. Cara Menjalankan (*CLI Execution*)
+Seluruh nilai default dibaca dari [`config/config.yaml`](config/config.yaml) (D-009). Jalankan dengan konfigurasi default:
 ```powershell
 python main.py
 ```
-*Hasil gambar akhir akan tersimpan secara otomatis pada `outputs/images/` dan grafik konvergensi loss pada `outputs/graphs/`.*
+Hasil disimpan ke `outputs/images/stylized_output.png`, `outputs/images/comparison_grid.png`, dan `outputs/graphs/loss_curve.png`, lalu ringkasan (loss awal/akhir, penurunan, waktu) dicetak ke terminal.
+
+Setiap nilai dapat di-*override* lewat argumen CLI (`python main.py --help`):
+
+| Opsi | Keterangan | Default (`config.yaml`) |
+| :--- | :--- | :--- |
+| `--config PATH` | Berkas konfigurasi YAML | `config/config.yaml` |
+| `--content PATH` | Gambar konten | `assets/content/content_sample.png` |
+| `--style PATH` | Gambar gaya | `assets/style/style_sample.png` |
+| `--output-image PATH` | Gambar hasil NST | `outputs/images/stylized_output.png` |
+| `--comparison-image PATH` | Panel perbandingan 3-kolom | `outputs/images/comparison_grid.png` |
+| `--loss-graph PATH` | Grafik penurunan loss | `outputs/graphs/loss_curve.png` |
+| `--size HEIGHT WIDTH` | Ukuran kerja `(H, W)` (D-005) | `256 256` |
+| `--steps N` | Jumlah langkah optimasi | `50` |
+| `--alpha A` / `--beta B` | Bobot content / style loss | `1.0` / `10000.0` |
+| `--optimizer {lbfgs,adam}` | Optimizer piksel | `lbfgs` |
+| `--lr LR` | Learning rate | `0.5` |
+| `--init-mode {content,style,random}` | Inisialisasi kanvas | `content` |
+| `--device {auto,cpu,cuda}` | Perangkat eksekusi | `auto` |
+| `--seed SEED` | Seed reprodusibilitas | `42` |
+| `--no-pretrained` | Pakai VGG-19 bobot acak terkalibrasi (offline, tanpa unduhan) | nonaktif |
+
+Contoh dengan gambar sendiri dan output terpisah agar artefak resmi tidak tertimpa:
+```powershell
+python main.py --content assets/content/foto.jpg --style assets/style/lukisan.jpg `
+    --output-image outputs/images/hasil_saya.png `
+    --comparison-image outputs/images/grid_saya.png `
+    --loss-graph outputs/graphs/loss_saya.png --steps 100 --size 512 512
+```
+*Tanpa koneksi internet, `main.py` otomatis beralih ke VGG-19 offline terkalibrasi bila bobot ImageNet belum ter-cache.*
 
 ---
 
@@ -244,6 +309,8 @@ Setiap anggota berinteraksi dengan AI melalui dua fase terpisah:
 
 Untuk rincian spesifikasi teknis dan tata kelola proyek yang lebih mendalam, silakan merujuk pada berkas dokumentasi internal:
 
+* 📘 [FINAL_REPORT.md](docs/FINAL_REPORT.md) — **Laporan akhir proyek**: teori, arsitektur, hasil eksperimen, kompleksitas, rekap QA, dan kontribusi anggota.
+* 🎤 [DEMO_CHECKLIST.md](docs/DEMO_CHECKLIST.md) — Checklist kesiapan demo, alur presentasi, dan FAQ teknis.
 * 📊 [PROGRESS_TRACKER.md](docs/planning/PROGRESS_TRACKER.md) — **Master status pelacakan 23 langkah kerja seluruh anggota tim**.
 * 📄 [PRD.md](docs/PRD.md) — *Product Requirement Document* & batasan teknis.
 * 📄 [SRS.md](docs/SRS.md) — *Software Requirements Specification* (fungsional & non-fungsional).
@@ -253,7 +320,8 @@ Untuk rincian spesifikasi teknis dan tata kelola proyek yang lebih mendalam, sil
 * 📋 [TASKS.md](docs/TASKS.md) — Rincian pembagian tugas dan matriks tahapan pengerjaan.
 * 🧪 [TEST_PLAN.md](docs/TEST_PLAN.md) — Protokol pengujian unit, integrasi, dan validasi matematis.
 * ⏱️ [COMPLEXITY_ANALYSIS.md](docs/COMPLEXITY_ANALYSIS.md) — Kerangka analisis efisiensi Big-O ruang dan waktu.
-* 📝 [LOG_INTERAKSI.md](docs/LOG_INTERAKSI.md) — Panduan format pencatatan riwayat *prompting* dan resolusi *bug*.
+* 📝 [LOG_INTERAKSI.md](docs/LOG_INTERAKSI.md) — Indeks resmi seluruh log interaksi AI tim, ringkasan *debugging*, dan rekap keputusan D-001–D-009.
+* 🤝 [HANDOFF.md](docs/HANDOFF.md) — Riwayat serah terima antar-stage (Handoff #1–#11).
 
 ---
 

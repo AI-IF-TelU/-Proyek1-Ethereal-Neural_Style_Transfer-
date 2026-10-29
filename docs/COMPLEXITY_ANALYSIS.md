@@ -121,3 +121,25 @@ Analisis matematis dan komputasional implementasi fungsi kerugian serta loop opt
 * **Peak Memory Autograd:**
   * Alokasi aktivasi antara selama forward pass untuk backward gradien piksel adalah $\mathcal{O}(B \cdot H \cdot W)$, yang dibersihkan secara otomatis oleh PyTorch segera setelah `total_loss.backward()` selesai.
 
+
+---
+
+## Visualisasi & Integrasi End-to-End Pipeline (`src/visualization.py` & `main.py` — Stage 6: S06-01 & S06-02)
+
+Analisis kompleksitas waktu dan ruang untuk modul visualisasi serta eksekusi pipeline end-to-end (Keputusan `D-009`).
+
+### 1. Kompleksitas Waktu (*Time Complexity*)
+* **`save_image(tensor, output_path)`:**
+  * Denormalisasi tensor ke `PIL.Image` melalui `deprocess_image`: $\mathcal{O}(C \cdot H \cdot W)$.
+  * Kompresi/penulisan berkas PNG/JPEG ke disk: $\mathcal{O}(C \cdot H \cdot W + E_{\text{codec}})$, di mana $E_{\text{codec}}$ adalah overhead kompresi berbasis ukuran gambar.
+* **`plot_loss_history(loss_history, output_path)`:**
+  * Validasi dan iterasi $T = \text{len}(\text{loss\_history})$ titik skalar: $\mathcal{O}(T)$.
+  * Rendering kanvas raster Matplotlib pada resolusi tetap $(W_{\text{fig}} \times H_{\text{fig}})$ piksel (`figsize=(8, 5), dpi=150` $\rightarrow 1200 \times 750$ piksel): $\mathcal{O}(T + W_{\text{fig}} \cdot H_{\text{fig}})$.
+* **`save_comparison_grid(content_image, style_image, generated_image, output_path)`:**
+  * Konversi ke-3 citra ke `PIL.Image` RGB dan perenderan subplot $1 \times 3$: $\mathcal{O}(3 \cdot C \cdot H \cdot W + W_{\text{grid}} \cdot H_{\text{grid}})$.
+* **Total Waktu Pipeline End-to-End (`run_pipeline` di `main.py`):**
+  $$T_{\text{pipeline}}(T, H, W) = \underbrace{\mathcal{O}(D + C H_s W_s + R + C H W)}_{\text{Stage 2: Preprocess (2 citra)}} + \underbrace{\mathcal{O}(P_{28})}_{\text{Stage 3: Init VGG}} + \underbrace{\mathcal{O}(T \cdot H \cdot W)}_{\text{Stage 4: Optimasi } T \text{ langkah}} + \underbrace{\mathcal{O}(C H W + T)}_{\text{Stage 6: Visualisasi}}$$
+  Untuk jumlah langkah $T \ge 10$, suku dominan secara asimtotik maupun empiris adalah loop optimasi piksel $\mathcal{O}(T \cdot H \cdot W)$ ($\ge 95\%$ dari total waktu eksekusi).
+
+### 2. Kompleksitas Ruang / Memori (*Space Complexity*)
+* Buffer kanvas Matplotlib (`Agg`) dialokasikan sebesar $4 \times W_{\text{fig}} \times H_{\text{fig}}$ byte ($\approx 3.6\text{ MB}$ untuk `loss_curve.png` dan $\approx 4.9\text{ MB}$ untuk `comparison_grid.png`) dan langsung dibebaskan melalui `plt.close(fig)` segera setelah penyimpanan berkas selesai, sehingga tidak menambah *peak memory* selama optimasi VGG-19.

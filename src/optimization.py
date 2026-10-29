@@ -193,10 +193,20 @@ def run_style_transfer(
     if math.isnan(beta) or math.isinf(beta) or beta < 0:
         raise ValueError(f"beta harus berupa numerik finite >= 0, diterima {beta}")
 
+    if not isinstance(optimizer_type, str):
+        raise TypeError(
+            "optimizer_type harus bertipe str, diterima "
+            f"{type(optimizer_type).__name__}"
+        )
     opt_type_lower = optimizer_type.lower()
     if opt_type_lower not in ("lbfgs", "adam"):
         raise ValueError(f"optimizer_type harus 'lbfgs' atau 'adam', diterima '{optimizer_type}'")
 
+    if not isinstance(init_mode, str):
+        raise TypeError(
+            "init_mode harus bertipe str, diterima "
+            f"{type(init_mode).__name__}"
+        )
     mode_lower = init_mode.lower()
     if mode_lower not in ("content", "style", "random"):
         raise ValueError(f"init_mode harus 'content', 'style', atau 'random', diterima '{init_mode}'")
@@ -229,10 +239,13 @@ def run_style_transfer(
             target_style_grams[layer_name] = gram_matrix(style_features_dict[layer_name].detach())
 
     # 4. Inisialisasi Piksel Citra yang Dioptimasi
+    # Tensor dari preprocess_image berstride hasil permute, sedangkan LBFGS
+    # memanggil grad.view(-1) yang butuh memori kontigu (S05-03).
+    contiguous = torch.contiguous_format
     if mode_lower == "content":
-        generated = content_tensor.detach().clone()
+        generated = content_tensor.detach().clone(memory_format=contiguous)
     elif mode_lower == "style":
-        generated = style_tensor.detach().clone()
+        generated = style_tensor.detach().clone(memory_format=contiguous)
     else:  # mode_lower == "random"
         generator = torch.Generator(device="cpu").manual_seed(seed)
         rand_rgb = torch.rand(content_tensor.shape, generator=generator, dtype=content_tensor.dtype)

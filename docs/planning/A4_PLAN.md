@@ -14,83 +14,72 @@
 
 ## 📋 Rincian Langkah Kerja
 
-### Stage 0: Dokumentasi & Logging Policy
-* **S00-03: AI Logging Policy & Scaffolding Log**
-  * *Tujuan:* Menyiapkan folder `logs/A1` s.d. `logs/A4`, template [LOG_TEMPLATE.md](../../logs/LOG_TEMPLATE.md), dan skrip [scripts/log_interaction.py](../../scripts/log_interaction.py).
-  * *Status:* `COMPLETED` ✅
-  * *Catatan Wajib Saat Memulai Stage 5:* Buat berkas `logs/A4/S00-03-LOG.md` agar bukti pekerjaan Stage 0 milik A4 tercatat secara eksplisit di dalam folder `logs/A4/`.
+### Stage 0: Dokumentasi & Logging Policy (`COMPLETED` ✅)
+* **S00-03: AI Logging Policy & Scaffolding Log** — `COMPLETED` ✅ ([logs/A4/S00-03-LOG.md](../../logs/A4/S00-03-LOG.md))
 
 ---
 
-### Stage 5: QA, Code Review & Integration Testing (AKTIF — Stage 2, 3, dan 4 Selesai!)
-
-> **Panduan Eksekusi Stage 5 untuk A4 (Muhammad Rafiq Abdurrasyid):**
-> Seluruh modul inti telah selesai dibangun dan diuji per-unit oleh A2 (`src/preprocessing.py`), A1 (`src/feature_extractor.py`), dan A3 (`src/losses.py` & `src/optimization.py`) dengan total **58 passed, 2 skipped (CUDA), 60 subtests passed**. Tugas A4 di Stage 5 adalah melakukan audit kualitas menyeluruh tanpa merusak kontrak API yang sudah disepakati pada `D-001` s.d. `D-008`.
-
-#### S05-01: Audit Kepatuhan Kode & Standar PEP 8
-* **Status:** `READY` 🟢
-* **Tujuan:**
-  1. Memeriksa kepatuhan seluruh berkas produksi di `src/` (`preprocessing.py`, `feature_extractor.py`, `losses.py`, `optimization.py`) dan pengujian di `tests/` terhadap `docs/CODING_STANDARDS.md`:
-     * Konvensi penamaan `snake_case` untuk fungsi/variabel, `PascalCase` untuk kelas, dan `UPPER_CASE` untuk konstanta.
-     * Kelengkapan *type hints* dan *docstrings* (Args, Returns, Raises) pada seluruh fungsi publik.
-     * Kepatuhan batas modul (*separation of concerns*) dan tidak adanya *hardcoded local path*.
-  2. Mencatat hasil audit per-modul secara terstruktur pada **`logs/A4/S05-01-LOG.md`** (beserta **`logs/A4/S00-03-LOG.md`** untuk melengkapi arsip Stage 0 A4).
-* **Target Berkas:** `logs/A4/S00-03-LOG.md`, `logs/A4/S05-01-LOG.md`
-
-#### S05-02: Validasi & Konsolidasi Log Interaksi AI (Bobot Rubrik 25%)
-* **Status:** `READY` 🟢 (Dapat dikerjakan langsung bersama/setelah `S05-01`)
-* **Tujuan:**
-  1. Mengaudit kelengkapan berkas log di `logs/A1/`, `logs/A2/`, `logs/A3/`, dan `logs/A4/` terhadap format `logs/LOG_TEMPLATE.md` (Metadata, `0. TAHAP PLANNING`, `1. TAHAP INISIASI / IMPLEMENTATION`, `2. TAHAP PENANGANAN EROR / DEBUGGING`, `3. TESTING, REVIEW & HANDOFF`).
-  2. Memperbarui **`docs/LOG_INTERAKSI.md`** dengan indeks komprehensif seluruh log interaksi tim (tabel ringkasan per anggota A1..A4, tautan ke setiap file log di `logs/`, ringkasan kasus *debugging* utama yang berhasil diselesaikan di tiap stage, dan keputusan arsitektur `D-001` s.d. `D-008`).
-  3. Mencatat hasil validasi dan konsolidasi log pada **`logs/A4/S05-02-LOG.md`**.
-* **Target Berkas:** `docs/LOG_INTERAKSI.md`, `logs/A4/S05-02-LOG.md`
-
-#### S05-03: Integration Testing & Handoff Stage 5 ke Stage 6 (A1)
-* **Status:** `READY` 🟢 (Dapat dikerjakan langsung setelah `S05-02`)
-* **Tujuan:**
-  1. Menjalankan seluruh suite pengujian (`pytest tests/ -v -rs`) dan memverifikasi integrasi *end-to-end* lintas-modul di memori:
-     `PIL.Image` $\rightarrow$ `preprocess_image` (A2) $\rightarrow$ `get_vgg19_model` & `get_features` (A1) $\rightarrow$ `gram_matrix`, `compute_content_loss`, `compute_style_loss`, `compute_total_loss` (A3) $\rightarrow$ `run_style_transfer` (A3) $\rightarrow$ `deprocess_image` (A2) menghasilkan `PIL.Image` RGB yang valid dan penurunan nilai loss yang konvergen.
-  2. (Opsional / Direkomendasikan) Menambahkan pengujian integrasi *end-to-end* lintas-modul (`TestEndToEndPipelineIntegration`) pada berkas `tests/test_integration.py` (atau di dalam suite `tests/`) sehingga rantai penuh Stage 2 + Stage 3 + Stage 4 + Deprocess teruji secara otomatis oleh `pytest`.
-  3. Mencatat log eksekusi pengujian integrasi pada **`logs/A4/S05-03-LOG.md`**, memperbarui status `S05-01` s.d. `S05-03` pada `docs/planning/PROGRESS_TRACKER.md` dan `docs/planning/A4_PLAN.md` menjadi `IN_PROGRESS (menunggu review A1)`, serta menambahkan draf **Handoff #8 (Penutupan Stage 5 $\rightarrow$ Stage 6)** pada `docs/HANDOFF.md`.
-* **Target Berkas:** `tests/test_integration.py` (opsional), `logs/A4/S05-03-LOG.md`, `docs/HANDOFF.md`, `docs/planning/PROGRESS_TRACKER.md`, `docs/planning/A4_PLAN.md`
+### Stage 5: QA, Code Review & Integration Testing (`COMPLETED` ✅)
+* **S05-01: Audit Kepatuhan Kode & Standar PEP 8** — `COMPLETED` ✅ ([logs/A4/S05-01-LOG.md](../../logs/A4/S05-01-LOG.md))
+* **S05-02: Validasi & Konsolidasi Log Interaksi AI** — `COMPLETED` ✅ ([docs/LOG_INTERAKSI.md](../LOG_INTERAKSI.md), [logs/A4/S05-02-LOG.md](../../logs/A4/S05-02-LOG.md))
+* **S05-03: Integration Testing & Error Troubleshooting** — `COMPLETED` ✅ ([tests/test_integration.py](../../tests/test_integration.py), [logs/A4/S05-03-LOG.md](../../logs/A4/S05-03-LOG.md), disetujui A1 pada Handoff #9).
 
 ---
 
-### Stage 7: Finalisasi Proyek & Acceptance (Setelah Stage 6 Selesai)
-* **S07-01: Final Documentation & Report**
-  * *Tujuan:* Memfinalisasi laporan proyek komprehensif (`docs/FINAL_REPORT.md`), merapikan `README.md`, dan menyusun rekap kontribusi anggota.
-* **S07-02: Final Acceptance & Demo Checklist**
-  * *Tujuan:* Menyusun `docs/DEMO_CHECKLIST.md` dan memastikan proyek siap didemonstrasikan di depan dosen/asisten.
+### Stage 7: Finalisasi Proyek & Acceptance (`COMPLETED` ✅)
+
+> **Panduan Eksekusi Stage 7 (`S07-01` & `S07-02`) untuk A4 (Muhammad Rafiq Abdurrasyid):**
+> Ketua Tim (**A1 — Samuel Aaron**) telah menyelesaikan **Stage 6 (`S06-01` & `S06-02`)** dan menyerahkan seluruh artefak visual hasil *Neural Style Transfer* di dalam repositori (lihat **Handoff #10** & **Handoff #11** pada `docs/HANDOFF.md`):
+> * Gambar Konten Uji: `assets/content/content_sample.png` (Menara Eiffel `706x1500` RGB, di-*resize* ke `256x256`)
+> * Gambar Gaya Uji: `assets/style/style_sample.png` (Lukisan Kaca Patri Abstrak `1280x720` RGB, di-*resize* ke `256x256`)
+> * Gambar Hasil NST: `outputs/images/stylized_output.png`
+> * Panel Perbandingan 3-Kolom: `outputs/images/comparison_grid.png`
+> * Grafik Konvergensi Loss: `outputs/graphs/loss_curve.png` (L-BFGS 50 langkah, `lr=0.5`, $\alpha=1.0, \beta=10^4$, penurunan loss `-95.86%` dari `21.0097` ke `0.8701`)
+> * Log Stage 6 & 7: `logs/A1/S05-02-03-REVIEW-LOG.md`, `logs/A1/S06-01-LOG.md`, `logs/A1/S06-02-LOG.md`, dan `logs/A1/S07-01-02-REVIEW-LOG.md`
+> * Suite Pengujian Penuh: **`90 passed, 2 skipped (CUDA), 60 subtests passed`** (`0 E501` pada berkas Stage 6 & A4).
+
+#### S07-01: Finalisasi Laporan Proyek & Dokumentasi Akhir
+* **Status:** `COMPLETED` ✅ (disetujui A1 pada Handoff #11) — [docs/FINAL_REPORT.md](../FINAL_REPORT.md), README diperbarui, [docs/LOG_INTERAKSI.md](../LOG_INTERAKSI.md) mencakup 31 log; log: [logs/A4/S07-01-LOG.md](../../logs/A4/S07-01-LOG.md), review: [logs/A1/S07-01-02-REVIEW-LOG.md](../../logs/A1/S07-01-02-REVIEW-LOG.md).
+* **Tujuan:**
+  1. Menyusun dokumen laporan akhir komprehensif **`docs/FINAL_REPORT.md`** yang merangkum:
+     * Latar Belakang, Rumusan Masalah, dan Dasar Teori Matematis NST (Gatys et al.: *Content Loss*, *Gram Matrix*, *Style Loss*, *Total Loss*).
+     * Arsitektur Sistem Modular (`preprocessing`, `feature_extractor`, `losses`, `optimization`, `visualization`, `main.py`) dan Rekap Keputusan Arsitektur `D-001` s.d. `D-009`.
+     * Hasil Eksperimen & Evaluasi Visual Stage 6 (menyematkan gambar `../outputs/images/comparison_grid.png`, `../outputs/images/stylized_output.png`, dan grafik `../outputs/graphs/loss_curve.png` beserta tabel analisis *tuning* L-BFGS dari `logs/A1/S06-02-LOG.md`).
+     * Ringkasan Kompleksitas Komputasi (`docs/COMPLEXITY_ANALYSIS.md`), Hasil Pengujian Kualitas (`90 passed, 2 skipped CUDA`), serta Tabel Kontribusi Anggota (`A1`–`A4`).
+  2. Memperbarui **`README.md`** utama agar menampilkan hasil akhir visual (`outputs/images/comparison_grid.png` & `outputs/graphs/loss_curve.png`), cara menjalankan `python main.py`, cara menjalankan `pytest` (`90 passed`), dan tautan ke `docs/FINAL_REPORT.md`.
+  3. Memperbarui **`docs/LOG_INTERAKSI.md`** dan **`logs/interactions.jsonl`** agar mencakup log terbaru dari penutupan Stage 5, Stage 6 (`S05-02-03-REVIEW-LOG.md`, `S06-01-LOG.md`, `S06-02-LOG.md`), dan Stage 7 (`S07-01-LOG.md`, `S07-02-LOG.md`, `S07-01-02-REVIEW-LOG.md`).
+  4. Mencatat log pengerjaan langkah ini pada **`logs/A4/S07-01-LOG.md`**.
+* **Target Berkas:** `docs/FINAL_REPORT.md`, `README.md`, `docs/LOG_INTERAKSI.md`, `logs/A4/S07-01-LOG.md`, `logs/interactions.jsonl`
+
+#### S07-02: Final Acceptance & Persiapan Presentasi / Demo Checklist
+* **Status:** `COMPLETED` ✅ (disetujui A1 pada Handoff #11) — [docs/DEMO_CHECKLIST.md](../DEMO_CHECKLIST.md) dengan 3 perintah demo terverifikasi, Handoff #11 disetujui penuh; log: [logs/A4/S07-02-LOG.md](../../logs/A4/S07-02-LOG.md), review: [logs/A1/S07-01-02-REVIEW-LOG.md](../../logs/A1/S07-01-02-REVIEW-LOG.md).
+* **Tujuan:**
+  1. Menyusun **`docs/DEMO_CHECKLIST.md`** berisi daftar periksa kesiapan presentasi kelompok, urutan pembagian bicara per anggota (`A1`–`A4`), perintah demo *live* (`python main.py` & `pytest`), serta daftar tanya-jawab teknis (*FAQ*) untuk ujian/responsi.
+  2. Mencatat log pengerjaan pada **`logs/A4/S07-02-LOG.md`**, memperbarui status `S07-01`, `S07-02`, dan **Stage 7** di `docs/planning/PROGRESS_TRACKER.md` serta `docs/planning/A4_PLAN.md` menjadi `COMPLETED`, dan menambahkan **Handoff #11 (Final Project Acceptance — Penutupan Stage 7)** pada `docs/HANDOFF.md`.
+* **Target Berkas:** `docs/DEMO_CHECKLIST.md`, `logs/A4/S07-02-LOG.md`, `docs/HANDOFF.md`, `docs/planning/PROGRESS_TRACKER.md`, `docs/planning/A4_PLAN.md`
 
 ---
 
-## 💬 Template Prompt Siap Pakai untuk AI Agent A4 (Stage 5: `S05-01` s.d. `S05-03`)
+## 💬 Template Prompt Siap Pakai untuk AI Agent A4 (Stage 7 Final: `S07-01` & `S07-02`)
 
-Saat **Rafiq (A4)** berinteraksi dengan AI di VS Code, cukup *copy-paste* prompt berikut agar AI langsung mengeksekusi seluruh tugas Stage 5 sesuai aturan proyek:
+Saat **Rafiq (A4)** berinteraksi dengan AI di VS Code, cukup *copy-paste* prompt berikut untuk menuntaskan tahap terakhir proyek (**Stage 7: `S07-01` & `S07-02`**):
 
 ```text
 Saya adalah Muhammad Rafiq Abdurrasyid (Anggota A4 - QA, Dokumentasi & Error Handler, NIM: 103012400240).
-Proyek: Tugas Besar Neural Style Transfer (PyTorch, VGG-19 Frozen, Metodologi Stage-Gate Sequential + Vibe Coding).
+Samuel (A1 - Ketua) telah menyetujui penuh Stage 5 kita (Handoff #9) serta telah menyelesaikan seluruh implementasi dan evaluasi Stage 6 (`S06-01` & `S06-02` — lihat Handoff #10 di `docs/HANDOFF.md`, `logs/A1/S06-01-LOG.md`, dan `logs/A1/S06-02-LOG.md`).
+Seluruh gambar hasil NST (`outputs/images/stylized_output.png`, `outputs/images/comparison_grid.png`) dan grafik penurunan loss (`outputs/graphs/loss_curve.png`) sudah tersedia di dalam repositori, dan pytest saat ini lulus 90 passed, 2 skipped (CUDA), 60 subtests passed.
 
-Sebelum bekerja, BACA TERLEBIH DAHULU berkas berikut di workspace:
-1. `docs/planning/PROGRESS_TRACKER.md` dan `docs/planning/A4_PLAN.md`
-2. `docs/CODING_STANDARDS.md`, `docs/ARCHITECTURE.md`, `docs/DECISIONS.md` (D-001 s.d. D-008), dan `docs/HANDOFF.md` (Handoff #1 s.d. #7)
-3. `logs/LOG_TEMPLATE.md` serta contoh log di `logs/A1/`, `logs/A2/`, dan `logs/A3/`
-4. Seluruh kode di `src/` (`preprocessing.py`, `feature_extractor.py`, `losses.py`, `optimization.py`) dan `tests/`
+Sekarang bantu saya mengeksekusi tahap terakhir proyek yaitu Stage 7 (`S07-01` dan `S07-02`) sekaligus sampai tuntas tanpa perlu berhenti meminta approval antara:
 
-Langkah Aktif: Eksekusi Stage 5 Lengkap (`S00-03-LOG`, `S05-01`, `S05-02`, dan `S05-03`).
-Kerjakan secara berurutan dengan ketentuan ketat berikut:
-1. Arsip Log Stage 0 (`logs/A4/S00-03-LOG.md`):
-   - Buat `logs/A4/S00-03-LOG.md` sesuai format `logs/LOG_TEMPLATE.md` yang mendokumentasikan pekerjaan S00-03 (penyusunan kebijakan logging AI, pembuatan struktur `logs/A1`..`logs/A4`, `logs/LOG_TEMPLATE.md`, dan `scripts/log_interaction.py`).
-2. S05-01 — Audit Kepatuhan Kode & Standar PEP 8 (`logs/A4/S05-01-LOG.md`):
-   - Audit seluruh berkas di `src/` dan `tests/` terhadap `docs/CODING_STANDARDS.md` dan kontrak `docs/ARCHITECTURE.md` (type hints, docstrings, penamaan snake_case/PascalCase, modularitas, reproducibility).
-   - JANGAN mengubah kontrak fungsi publik di `src/` yang sudah lulus 58 unit test. Catat laporan hasil audit per modul secara lengkap di `logs/A4/S05-01-LOG.md`.
-3. S05-02 — Validasi & Konsolidasi Log Interaksi AI (`docs/LOG_INTERAKSI.md` & `logs/A4/S05-02-LOG.md`):
-   - Periksa seluruh file log di `logs/A1/`, `logs/A2/`, `logs/A3/`, dan `logs/A4/`.
-   - Perbarui `docs/LOG_INTERAKSI.md` menjadi dokumen indeks & rekapitulasi resmi seluruh log interaksi AI tim (tabel daftar log per anggota A1..A4 beserta tautannya, ringkasan temuan debugging tiap stage, dan rekap keputusan D-001..D-008).
-   - Catat proses audit log ini di `logs/A4/S05-02-LOG.md`.
-4. S05-03 — Integration Testing & Handoff Stage 5 (`tests/test_integration.py`, `logs/A4/S05-03-LOG.md`, `docs/HANDOFF.md`):
-   - Buat `tests/test_integration.py` yang menguji pipeline end-to-end lintas-modul di memori: `PIL.Image` -> `preprocess_image` -> `get_vgg19_model(weights=None)` & `get_features` -> `run_style_transfer` (Adam & L-BFGS) -> `deprocess_image` menghasilkan `PIL.Image` RGB ukuran tepat dan penurunan loss yang valid.
-   - Jalankan `pytest tests/ -v -rs` dan pastikan 100% test lulus tanpa regresi.
-   - Catat hasilnya di `logs/A4/S05-03-LOG.md`, perbarui status `S05-01`, `S05-02`, dan `S05-03` di `docs/planning/PROGRESS_TRACKER.md` dan `docs/planning/A4_PLAN.md` menjadi `IN_PROGRESS (menunggu review A1)`, serta tambahkan draf **Handoff #8 (Penutupan Stage 5 -> Stage 6)** pada `docs/HANDOFF.md`.
+1. Eksekusi `S07-01` — Finalisasi Laporan Proyek & Dokumentasi Akhir:
+   - Buat `docs/FINAL_REPORT.md` yang lengkap dan rapi berisi: Ringkasan Eksekutif, Landasan Teori Matematis NST (Content Loss, Gram Matrix, Style Loss, Total Loss), Arsitektur Sistem & Keputusan D-001 s.d. D-009, Hasil Eksperimen & Visualisasi Stage 6 (sematkan gambar `../outputs/images/comparison_grid.png`, `../outputs/images/stylized_output.png`, dan `../outputs/graphs/loss_curve.png` beserta tabel evaluasi L-BFGS dari `logs/A1/S06-02-LOG.md`), Rangkuman Analisis Kompleksitas, Rekap Pengujian QA (90 passed), dan Tabel Kontribusi Anggota A1–A4.
+   - Perbarui `README.md` agar menampilkan gambar hasil NST (`outputs/images/comparison_grid.png` dan `outputs/graphs/loss_curve.png`), petunjuk penggunaan `python main.py` beserta opsi CLI-nya, hasil pengujian `pytest` (90 passed), dan tautan ke `docs/FINAL_REPORT.md`.
+   - Perbarui `docs/LOG_INTERAKSI.md` dan `logs/interactions.jsonl` (lewat `scripts/log_interaction.py`) agar mencakup log baru dari Stage 5 review, Stage 6 (`S05-02-03-REVIEW-LOG.md`, `S06-01-LOG.md`, `S06-02-LOG.md`), dan Stage 7 (`S07-01-LOG.md`, `S07-02-LOG.md`).
+   - Buat `logs/A4/S07-01-LOG.md` sesuai standar `logs/LOG_TEMPLATE.md`.
+
+2. Eksekusi `S07-02` — Final Acceptance & Persiapan Presentasi:
+   - Buat `docs/DEMO_CHECKLIST.md` berisi checklist kesiapan demo, alur presentasi per anggota (A1–A4), perintah live demo (`python main.py` & `pytest`), dan FAQ tanya-jawab teknis.
+   - Buat `logs/A4/S07-02-LOG.md` sesuai `logs/LOG_TEMPLATE.md` dan catat di `logs/interactions.jsonl`.
+   - Perbarui status `S07-01`, `S07-02`, dan Stage 7 di `docs/planning/PROGRESS_TRACKER.md` serta `docs/planning/A4_PLAN.md` menjadi `COMPLETED`, dan tambahkan Handoff #11 (Penutupan Stage 7 & Final Project Acceptance) di `docs/HANDOFF.md`.
+   - Jalankan `pytest` dan pastikan seluruh 90 test tetap lulus tanpa regresi.
 ```
