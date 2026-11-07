@@ -35,7 +35,7 @@ Proyek ini bertujuan mengimplementasikan algoritma **Neural Style Transfer** ori
 3. **Pengembangan Mandiri (*From Scratch*):** Seluruh formulasi matematis—mulai dari ekstraksi representasi konten, kalkulasi korelasi fitur melalui **Gram Matrix**, perumusan *Style Loss*, hingga perulangan optimasi (*optimization loop*)—diimplementasikan secara mandiri tanpa menggunakan pustaka *style transfer* instan.
 4. **Metodologi Vibe Coding Berdisiplin:** Mengedepankan kolaborasi terstruktur bersama *Large Language Model* (LLM) dengan pendekatan *Stage-Gate Sequential*, di mana seluruh interaksi, proses *debugging*, hingga justifikasi arsitektur terdokumentasi secara transparan.
 
-📄 Laporan lengkap proyek: **[docs/FINAL_REPORT.md](docs/FINAL_REPORT.md)**
+📄 Laporan lengkap proyek: **[report/FINAL_REPORT.md](report/FINAL_REPORT.md)** ([docs/FINAL_REPORT.md](docs/FINAL_REPORT.md)) • 📊 Slide Presentasi: **[report/PPT-MID-PROJECT.pdf](report/PPT-MID-PROJECT.pdf)**
 
 ---
 
@@ -170,6 +170,10 @@ neural-style-transfer/
 ├── outputs/               # Direktori luaran model
 │   ├── graphs/            # Visualisasi grafik penurunan loss
 │   └── images/            # Gambar hasil transfer gaya per checkpoint
+│
+├── report/                # Direktori laporan akhir & slide presentasi
+│   ├── FINAL_REPORT.md    # Laporan akhir komprehensif proyek
+│   └── PPT-MID-PROJECT.pdf# Slide presentasi kelompok (PDF)
 │
 ├── scripts/               # Skrip pendukung otomatisasi
 │   └── log_interaction.py
@@ -309,7 +313,8 @@ Setiap anggota berinteraksi dengan AI melalui dua fase terpisah:
 
 Untuk rincian spesifikasi teknis dan tata kelola proyek yang lebih mendalam, silakan merujuk pada berkas dokumentasi internal:
 
-* 📘 [FINAL_REPORT.md](docs/FINAL_REPORT.md) — **Laporan akhir proyek**: teori, arsitektur, hasil eksperimen, kompleksitas, rekap QA, dan kontribusi anggota.
+* 📘 [report/FINAL_REPORT.md](report/FINAL_REPORT.md) ([docs/FINAL_REPORT.md](docs/FINAL_REPORT.md)) — **Laporan akhir proyek**: teori, arsitektur, hasil eksperimen, kompleksitas, rekap QA, dan kontribusi anggota.
+* 📊 [report/PPT-MID-PROJECT.pdf](report/PPT-MID-PROJECT.pdf) — **Slide presentasi akhir proyek (PDF)**.
 * 🎤 [DEMO_CHECKLIST.md](docs/DEMO_CHECKLIST.md) — Checklist kesiapan demo, alur presentasi, dan FAQ teknis.
 * 📊 [PROGRESS_TRACKER.md](docs/planning/PROGRESS_TRACKER.md) — **Master status pelacakan 23 langkah kerja seluruh anggota tim**.
 * 📄 [PRD.md](docs/PRD.md) — *Product Requirement Document* & batasan teknis.
